@@ -1,32 +1,37 @@
 [![LICENSE](https://www.gnu.org/graphics/gplv3-88x31.png)](https://www.gnu.org/licenses/gpl-3.0.txt)
 
-Chestnut Chase
-==============
+GGJ 2024
+========
 
-Deep in the dark forrest there are thousands of old chestnut tree with
-ripe chestnuts in their capsule. It would be such shame to let the go
-to waste by simply falling down to the earth and taking root next to
-those parent trees.
+TODO: Describe game
 
-It's the duty of our heros to collect tose chestnuts and to take them
-to the next light-flooded clearing. But they have to be careful since
-freshly sprouted chestnut seedlings have thick thorns!
-
-Build
------
-
-Requirements:
+Requirements
+------------
 
  * [Python 3](https://www.python.org/)
- * [Conan](https://conan.io/)
+ * [SDL2](https://github.com/libsdl-org/SDL/releases/tag/release-2.28.5)
+ * [SDL2-image](https://github.com/libsdl-org/SDL_image/releases/tag/release-2.8.2)
+ * [SDL2-mixer](https://github.com/libsdl-org/SDL_mixer/releases/tag/release-2.6.3)
+ * [GLEW](https://sourceforge.net/projects/glew/files/glew/2.2.0/)
+ * [glm](https://github.com/g-truc/glm/releases/tag/0.9.9.8)
  * [CMake](https://cmake.org/)
 
-In order to build the project please type:
+Build on GNU/Linux
+------------------
 
-    cd <sources>
-    pip install conan
-    mkdir build
-    cd build
-    conan install ..
-    cmake ..
-    cmake --build .
+Install the required dependencies with your system's package manager. Then call
+
+    $ mkdir build
+    $ cd build
+    $ cmake ..
+    $ cmake --build .
+
+Build on Windows
+----------------
+
+Download the prebuilt binaries and put them into a common folder. Then call
+
+    > mkdir build
+    > cd build
+    > cmake -DCMAKE_PREFIX_PATH=<common-folder> -DGLEW_ROOT=<glew-folder> ..
+    > cmake --build .

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.26)
-project(ggj2023 CXX)
+project(ggj2024 CXX)
 
 find_package(Python COMPONENTS Interpreter REQUIRED)
 find_package(SDL2 REQUIRED CONFIG)
