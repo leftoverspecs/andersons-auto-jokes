@@ -15,6 +15,7 @@ convert_to_header(destination.frag destination_frag)
 convert_to_header(font.png test_font)
 convert_to_header(logo.png logo)
 convert_to_header(test.txt test)
+convert_to_header(test_background.png test_background)
 convert_to_header(test_gradient.png test_gradient)
 convert_to_header(test_music.mp3 test_music)
 convert_to_header(test_particle.png test_particle)
@@ -67,6 +68,8 @@ add_library(test_assets INTERFACE
 target_include_directories(test_assets INTERFACE "${CMAKE_CURRENT_BINARY_DIR}")
 
 add_library(assets INTERFACE
+    "${CMAKE_CURRENT_SOURCE_DIR}/test_background.png"
+    "${CMAKE_CURRENT_BINARY_DIR}/test_background.png.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/box.frag"
     "${CMAKE_CURRENT_BINARY_DIR}/box.frag.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/box.vert"
