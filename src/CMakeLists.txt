@@ -25,3 +25,10 @@ target_link_libraries(chestnutchase PRIVATE
     assets
     engine
 )
+
+install(TARGETS chestnutchase
+    RUNTIME_DEPENDENCIES
+        DIRECTORIES "${CMAKE_PREFIX_PATH}/bin"
+        PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-" "hvsifiletrust" "pdmutilities"
+        POST_EXCLUDE_REGEXES ".*WINDOWS[\\/]system32.*"
+    RUNTIME)
