@@ -11,5 +11,6 @@ find_package(OpenGL REQUIRED)
 
 add_subdirectory(assets)
 add_subdirectory(engine)
+add_subdirectory(chestnut)
 add_subdirectory(src)
 add_subdirectory(tests)
