@@ -1,13 +1,15 @@
 #include <GL/glew.h>
 #include <SDL.h>
-#include <SDL_mixer.h>
 
 #include <audio.h>
 #include <controller.h>
+#include <destination.h>
 #include <image.h>
 
 #include <iostream>
 #include <string>
+
+#include <glm/gtx/transform.hpp>
 
 #include "background.h"
 
@@ -58,9 +60,12 @@ int main() {
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glViewport(0, 0, WIDTH, HEIGHT);
 
-    engine::Audio audio(44100, MIX_DEFAULT_FORMAT, 2, 128);
+    //engine::Audio audio(44100, MIX_DEFAULT_FORMAT, 2, 128);
 
-    game::Background background(WIDTH, HEIGHT);
+    game::Background background(WIDTH, HEIGHT, 0);
+    game::Background background2(WIDTH, HEIGHT, 1);
+    engine::Destination destination(WIDTH, HEIGHT);
+    engine::Destination destination2(WIDTH, HEIGHT);
 
     bool quit = false;
     Uint64 last = SDL_GetTicks64();
@@ -84,11 +89,22 @@ int main() {
         const Uint64 diff = next - last;
         last = next;
         {
+            auto binding = destination.bind_as_target();
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
             background.draw();
         }
+        {
+            auto binding = destination2.bind_as_target();
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            background2.draw();
+        }
+        const float alpha = 0.5f * std::sin(2 * next * M_PI / 5000.0f) + 0.5f;
+        destination.draw(glm::translate(glm::vec3(0.0f, 0.0f, 0.0f)), glm::vec3(0.0f), alpha, glm::vec3(1.0f));
+        destination2.draw(glm::translate(glm::vec3(0.0f, 0.0f, 0.0f)), glm::vec3(0.0f), 1.0f - alpha, glm::vec3(1.0f));
         SDL_GL_SwapWindow(window);
 
         if (diff > 0) {

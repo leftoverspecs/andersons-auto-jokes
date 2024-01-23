@@ -80,10 +80,12 @@ void Destination::set_exposure(float exposure) {
     this->exposure = exposure;
 }
 
-void Destination::draw(const glm::mat4x4 &projection, const glm::vec3 &color) const {
+void Destination::draw(const glm::mat4x4 &projection, const glm::vec3 &effect, float alpha, const glm::vec3 &factor) const {
     auto usage = shader.use();
     usage.set_uniform("projection", projection);
-    usage.set_uniform("color", color);
+    usage.set_uniform("effect", effect);
+    usage.set_uniform("alpha", alpha);
+    usage.set_uniform("factor", factor);
     usage.set_uniform("gamma", gamma);
     usage.set_uniform("exposure", exposure);
     auto binding = vao.bind();

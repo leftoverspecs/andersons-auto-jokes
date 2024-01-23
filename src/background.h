@@ -7,7 +7,7 @@ namespace game {
 
 class Background {
 public:
-    Background(float width, float height);
+    Background(float width, float height, int index);
 
     void draw();
 private:
