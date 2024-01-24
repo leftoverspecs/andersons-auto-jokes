@@ -79,7 +79,7 @@ void Screen::update(float msec) {
 
 void Screen::draw() {
     glViewport(window_x, window_y, window_width, window_height);
-    destination.draw(glm::translate(glm::vec3(position, 0.0f)), color);
+    destination.draw(glm::translate(glm::vec3(position, 0.0f)), color, 1.0f, glm::vec3(1.0f));
     //destination.draw(glm::translate(glm::vec3(position, 0.0f)), glm::vec3(0.0f, 0.0f, 0.0f));
     //destination.draw(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 }

@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
         }
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        destination.draw(glm::translate(glm::vec3(0.0f, 0.0f, 0.0f)), glm::vec3(0.0f, 0.0f, 0.0f));
+        destination.draw(glm::translate(glm::vec3(0.0f, 0.0f, 0.0f)), glm::vec3(0.0f, 0.0f, 0.0f), 1.0, glm::vec3(1.0f));
         SDL_GL_SwapWindow(window);
     }
 

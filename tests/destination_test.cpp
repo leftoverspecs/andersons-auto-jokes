@@ -128,7 +128,7 @@ int main(int argc, char *argv[]) {
         } else {
             red = 0.0f;
         }
-        destination.draw(glm::translate(glm::vec3(x, y, 0.0f)), glm::vec3(10.0f * red, 0.0f, 0.0f));
+        destination.draw(glm::translate(glm::vec3(x, y, 0.0f)), glm::vec3(10.0f * red, 0.0f, 0.0f), 1.0, glm::vec3(1.0f));
         SDL_GL_SwapWindow(window);
 
         const long next = SDL_GetTicks64();
