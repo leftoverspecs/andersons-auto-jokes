@@ -13,6 +13,7 @@ convert_to_header(blib.wav blib)
 convert_to_header(destination.vert destination_vert)
 convert_to_header(destination.frag destination_frag)
 convert_to_header(font.png test_font)
+convert_to_header(boxyfont.png boxyfont)
 convert_to_header(logo.png logo)
 convert_to_header(test.txt test)
 convert_to_header(test_background.png test_background)
@@ -67,6 +68,7 @@ add_library(test_assets INTERFACE
     "${CMAKE_CURRENT_BINARY_DIR}/test_spritemap.png.h"
 )
 target_include_directories(test_assets INTERFACE "${CMAKE_CURRENT_BINARY_DIR}")
+target_include_directories(test_assets INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}")
 
 add_library(assets INTERFACE
     "${CMAKE_CURRENT_SOURCE_DIR}/test_background.png"
@@ -111,3 +113,12 @@ add_library(assets INTERFACE
     "${CMAKE_CURRENT_BINARY_DIR}/treelayer3.png.h"
 )
 target_include_directories(assets INTERFACE "${CMAKE_CURRENT_BINARY_DIR}")
+target_include_directories(assets INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}")
+
+add_library(boxyfont STATIC
+        boxyfont.cpp
+        boxyfont.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/boxyfont.png
+        ${CMAKE_CURRENT_BINARY_DIR}/boxyfont.png.h)
+target_include_directories(boxyfont PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(boxyfont INTERFACE ${CMAKE_CURRENT_BINARY_DIR})

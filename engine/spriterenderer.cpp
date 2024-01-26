@@ -1,6 +1,5 @@
 #include "spriterenderer.h"
 
-#include "spritemap.h"
 #include "texture.h"
 
 #include <stdexcept>
@@ -56,8 +55,11 @@ void SpriteRenderer::clear() {
 
 void SpriteRenderer::queue(const glm::mat4 &model, const glm::vec4 &color,
                            unsigned int i, unsigned int j) {
-    SpriteMap::TextureRect rect = map.get_sprite(i, j);
+    const SpriteMap::TextureRect rect = map.get_sprite(i, j);
+    queue(model, color, rect);
+}
 
+void SpriteRenderer::queue(const glm::mat4 &model, const glm::vec4 &color, const SpriteMap::TextureRect &rect) {
     const glm::vec4 a = model * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
     const glm::vec4 b = model * glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
     const glm::vec4 c = model * glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);

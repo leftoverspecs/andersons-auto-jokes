@@ -2,6 +2,7 @@
 
 #include "buffer.h"
 #include "program.h"
+#include "spritemap.h"
 #include "vertexarray.h"
 
 #include <GL/glew.h>
@@ -12,7 +13,6 @@
 
 namespace engine {
 
-class SpriteMap;
 class Texture;
 
 class SpriteRenderer {
@@ -22,6 +22,9 @@ public:
     void clear();
     void queue(const glm::mat4 &model, const glm::vec4 &color,
                unsigned int i, unsigned int j);
+    void queue(const glm::mat4 &model, const glm::vec4 &color,
+               const SpriteMap::TextureRect &rect);
+
     void draw() const;
 private:
     Program shader;

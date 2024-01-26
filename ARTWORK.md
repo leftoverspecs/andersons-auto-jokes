@@ -21,3 +21,5 @@ The game assets come from various artists:
  * Chestnut by [Dall.E](https://labs.openai.com/)
 
  * Music by [Anton Wähnert](ant.wrnt@gmail.com)
+
+ * Boxy Font by [devurandom](https://opengameart.org/content/boxy-bold-font-0)
