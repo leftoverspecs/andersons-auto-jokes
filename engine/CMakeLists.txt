@@ -45,6 +45,8 @@ add_library(engine STATIC
         boxrenderer.h
         textboxrenderer.h
         testboxrenderer.cpp
+        widget.cpp
+        widget.h
 )
 target_link_libraries(engine PRIVATE
     SDL2::SDL2

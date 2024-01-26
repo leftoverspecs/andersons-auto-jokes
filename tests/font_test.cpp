@@ -4,10 +4,12 @@
 #include <textboxrenderer.h>
 #include <boxrenderer.h>
 #include <font.h>
+#include <widget.h>
 
 #include <iostream>
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <utility>
 
 #include <boxyfont.h>
 #include <boxyfont.png.h>
@@ -19,6 +21,31 @@ _declspec(dllexport) uint32_t NvOptimusEnablement = 0x00000001;
 
 }
 #endif
+
+class Message : public engine::Widget {
+public:
+    Message(engine::TextBoxRenderer &renderer, float x, float y, float w, float h, float screen_height,
+            std::string text)
+        : engine::Widget{x, y, w, h, screen_height}, renderer{renderer}, text{std::move(text)} {}
+
+private:
+    engine::TextBoxRenderer &renderer;
+    std::string text;
+    bool clicked;
+
+    void on_draw(float mouse_x, float mouse_y) override {
+        if (!clicked) {
+            renderer.queue(get_x(), get_y(), get_w(), get_h(),
+                           3, 4, text,
+                           glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+                           glm::vec4(1.0f, 1.0f, 1.0f, is_inside(mouse_x, mouse_y) ? 1.0f : 0.25f));
+        }
+    }
+
+    void on_clicked(float mouse_x, float mouse_y, int buttons) override {
+        clicked = true;
+    }
+};
 
 int main() {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -63,6 +90,7 @@ int main() {
     engine::Font font(width, height, boxyfont, sizeof(boxyfont), assets::boxyfont_widths);
     engine::BoxRenderer frame(width, height);
     engine::TextBoxRenderer textbox(font, frame);
+    Message msg(textbox, 100, 200, 300, 100, height, "This is a text for us!");
 
     bool quit = false;
     while (!quit) {
@@ -86,7 +114,8 @@ int main() {
         frame.clear();
         font.clear();
         int x, y;
-        SDL_GetMouseState(&x, &y);
+        int buttons = SDL_GetMouseState(&x, &y);
+        y = height - y;
         /*const float angle = std::atan2(static_cast<float>(height - y - (height - font.get_height()) / 2.0f), static_cast<float>(x));
         const float pos_x = 50.0f;
         const float pos_y = height / 2.0f;
@@ -103,7 +132,18 @@ int main() {
         model = glm::translate(model, glm::vec3(-10.0f, font_height + 10.0f, 0.0f));
         model = glm::scale(model, glm::vec3(300.0f + 20.0f, -2.0f * font_height - 20.0f, 1.0f));
         frame.queue_frame(model, glm::vec4(1.0f, 1.0f, 1.0f, 0.25f));*/
-        textbox.queue(x, height - y, 300, 100, 3, 4, "This is a text for us!");
+        /*float alpha = 0.25f;
+        if (engine::TextBoxRenderer::is_inside(100, 200, 300, 100, x, y)) {
+            alpha = 0.5f;
+        }
+        if (SDL_BUTTON(buttons) == SDL_BUTTON_LEFT) {
+            alpha = 1.0f;
+        }
+
+        textbox.queue(100, 200, 300, 100, 3, 4, "This is a text for us!",
+                      glm::vec4(1.0f, 1.0f, 1.0f, alpha),
+                      glm::vec4(1.0f, 1.0f, 1.0f, alpha));*/
+        msg.draw();
         frame.draw();
         font.draw();
         SDL_GL_SwapWindow(window);
