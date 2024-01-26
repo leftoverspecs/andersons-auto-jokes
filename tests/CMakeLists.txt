@@ -66,3 +66,12 @@ target_link_libraries(music_test PRIVATE
         test_assets
         engine
 )
+
+add_executable(music_test_afx WIN32 music_test_afx.cpp)
+target_link_libraries(music_test_afx PRIVATE
+        SDL2::SDL2
+        SDL2::SDL2main
+        GLEW::GLEW
+        test_assets
+        engine
+)

@@ -19,6 +19,8 @@ convert_to_header(test_music.mp3 test_music)
 convert_to_header(test_particle.png test_particle)
 convert_to_header(test_sprite.png test_sprite)
 convert_to_header(test_spritemap.png test_spritemap)
+convert_to_header(blib_afx1.wav blib_afx1)
+convert_to_header(blib_afx2.wav blib_afx2)
 
 add_library(test_assets INTERFACE
     "${CMAKE_CURRENT_SOURCE_DIR}/blib.wav"
@@ -41,6 +43,10 @@ add_library(test_assets INTERFACE
     "${CMAKE_CURRENT_BINARY_DIR}/test_sprite.png.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/test_spritemap.png"
     "${CMAKE_CURRENT_BINARY_DIR}/test_spritemap.png.h"
+    "${CMAKE_CURRENT_BINARY_DIR}/blib_afx1.wav"
+    "${CMAKE_CURRENT_BINARY_DIR}/blib_afx1.wav.h"
+    "${CMAKE_CURRENT_BINARY_DIR}/blib_afx2.wav"
+    "${CMAKE_CURRENT_BINARY_DIR}/blib_afx2.wav.h"
 )
 target_include_directories(test_assets INTERFACE "${CMAKE_CURRENT_BINARY_DIR}")
 
