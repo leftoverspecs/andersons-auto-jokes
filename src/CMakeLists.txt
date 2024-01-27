@@ -1,4 +1,6 @@
 add_executable(andersonsautojokes WIN32
+	audio_data.cpp
+	audio_data.h
         background.cpp
         background.h
         game.cpp

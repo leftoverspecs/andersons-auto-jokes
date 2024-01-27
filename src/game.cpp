@@ -16,15 +16,9 @@
 #include "person.h"
 #include "shop.h"
 
+#include "audio_data.h"
+
 #include <family.png.h>
-#include <snd_laugh_child1.wav.h>
-#include <snd_laugh_female1.wav.h>
-#include <snd_laugh_female2.wav.h>
-#include <snd_laugh_male1.wav.h>
-#include <snd_laugh_male2.wav.h>
-#include <snd_laugh_male3.wav.h>
-#include <snd_steps.wav.h>
-#include <snd_steps2.wav.h>
 
 #include <boxyfont.h>
 #include <boxyfont.png.h>
@@ -80,13 +74,6 @@ int main() {
     glViewport(0, 0, WIDTH, HEIGHT);
 
     engine::Audio audio(44100, MIX_DEFAULT_FORMAT, 2, 64);
-    engine::Chunk chunk_snd_laugh_child1(snd_laugh_child1, sizeof(snd_laugh_child1));
-    engine::Chunk chunk_snd_laugh_female1(snd_laugh_female1, sizeof(snd_laugh_female1));
-    engine::Chunk chunk_snd_laugh_female2(snd_laugh_female2, sizeof(snd_laugh_female2));
-    engine::Chunk chunk_snd_laugh_male1(snd_laugh_male1, sizeof(snd_laugh_male1));
-    engine::Chunk chunk_snd_laugh_male2(snd_laugh_male2, sizeof(snd_laugh_male2));
-    engine::Chunk chunk_snd_laugh_male3(snd_laugh_male3, sizeof(snd_laugh_male3));
-    engine::Chunk chunk_snd_steps(snd_steps2, sizeof(snd_steps2));
 
     engine::Font font(WIDTH, HEIGHT, boxyfont, sizeof(boxyfont), assets::boxyfont_widths);
     engine::SpriteMap family_spritemap{family, sizeof(family), 8, 8};
