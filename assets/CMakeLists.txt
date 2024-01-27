@@ -24,6 +24,7 @@ convert_to_header(blib_afx2.wav blib_afx2)
 convert_to_header(snd_laugh_child1.wav snd_laugh_child1)
 convert_to_header(snd_laugh_female1.wav snd_laugh_female1)
 convert_to_header(snd_laugh_female2.wav snd_laugh_female2)
+convert_to_header(snd_laugh_female3.wav snd_laugh_female3)
 convert_to_header(snd_laugh_male1.wav snd_laugh_male1)
 convert_to_header(snd_laugh_male2.wav snd_laugh_male2)
 convert_to_header(snd_laugh_male3.wav snd_laugh_male3)
@@ -112,6 +113,9 @@ add_library(game_assets INTERFACE
         "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_female1.wav.h"
         "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_female2.wav"
         "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_female2.wav.h"
+        "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_female3.wav"
+        "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_female3.wav.h"
+        "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_male1.wav"
         "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_male1.wav"
         "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_male1.wav.h"
         "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_male2.wav"

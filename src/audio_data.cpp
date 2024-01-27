@@ -22,7 +22,7 @@ std::vector<engine::Chunk> init_snd_laugh() {
     result.emplace_back(snd_laugh_male4, sizeof(snd_laugh_male3));
     result.emplace_back(snd_laugh_male5, sizeof(snd_laugh_male3));
     result.emplace_back(snd_laugh_child1, sizeof(snd_laugh_child1));
-    result.emplace_back(snd_laugh_female1, sizeof(snd_laugh_female1));
+    result.emplace_back(snd_laugh_female3, sizeof(snd_laugh_female3));
     result.emplace_back(snd_laugh_female2, sizeof(snd_laugh_female2));
     return result;
 }

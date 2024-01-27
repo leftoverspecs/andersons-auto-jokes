@@ -10,6 +10,10 @@ snd_laugh_female2.wav
 - https://freesound.org/people/ivanmilic/sounds/557529/
 - CC0 1.0 Deed - CC0 1.0 Universal 
 
+snd_laugh_female3.wav
+- https://freesound.org/people/MadamVicious/sounds/219778/
+- CC0 1.0 Deed - CC0 1.0 Universal 
+
 snd_laugh_male1.wav
 - https://freesound.org/people/jealoussiblingprison/sounds/367738/
 - CC BY-NC 3.0 Deed - Attribution-NonCommercial 3.0 Unported 
