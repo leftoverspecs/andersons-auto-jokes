@@ -76,10 +76,10 @@ int main() {
             game::Person::Stats{0, 10.0, 1.0, 0.5, "Mum"},
     };
     std::vector<game::Person::Stats> team2{
-            game::Person::Stats{0, 10.0, 1.0, 1.0, "Big Sister"},
             game::Person::Stats{0, 10.0, 5.0, 3.0, "Dad"},
-            game::Person::Stats{0, 10.0, 1.0, 5.0, "Little Brother"},
             game::Person::Stats{0, 10.0, 1.0, 0.5, "Mum"},
+            game::Person::Stats{0, 10.0, 1.0, 1.0, "Big Sister"},
+            game::Person::Stats{0, 10.0, 1.0, 5.0, "Little Brother"},
     };
 
     game::Fight fight(window, WIDTH, HEIGHT, font, family_spritemap);

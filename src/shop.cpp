@@ -68,7 +68,7 @@ void Shop::startup(const std::vector<Person::Stats> &old_team_stats) {
     for (const auto &s : old_team_stats) {
         Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
         person.stand(x, 300.0f);
-        x += 50.0f;
+        x += 100.0f;
         team.push_back(person);
     }
     state = State::FADE_IN;

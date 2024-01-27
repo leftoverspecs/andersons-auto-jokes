@@ -62,8 +62,8 @@ void Fight::update(float delta_time) {
         Person &person1 = team1[current_person1];
         Person &person2 = team2[current_person2];
         if (state == State::PREPARE) {
-            person1.walk_to(250.0f, 100.0f);
-            person2.walk_to(350.0f, 100.0f);
+            person1.walk_to(350.0f, 100.0f);
+            person2.walk_to(450.0f, 100.0f);
             state = State::PREPARING;
         } else if (state == State::PREPARING) {
             if (person1.arrived() && person2.arrived()) {
@@ -89,35 +89,32 @@ void Fight::update(float delta_time) {
         } else if (state == State::SECOND_TALKING) {
             if (timer < 1.0f) {
                 state = State::TENSION;
-                timer = 1000.0f;
-            }
-        } else if (state == State::TENSION) {
-            if (timer < 1.0f) {
-                state = State::REACTION;
                 person1.fighting(person2);
                 person2.fighting(person1);
             }
-        } else if (state == State::REACTION) {
-            bool person1_fought = person1.fought();
-            bool person2_fought = person2.fought();
-            if (person1_fought) {
-                if (person1.defeated()) {
-                    person1.fly_away();
-                    ++current_person1;
-                }
-            }
-            if (person2_fought) {
-                if (person2.defeated()) {
-                    person2.fly_away();
-                    ++current_person2;
-                }
-            }
-            if (person1_fought && person2_fought) {
-                if (current_person1 < team1.size() && current_person2 < team2.size()) {
-                    state = State::PREPARE;
+        } else if (state == State::TENSION) {
+            if (timer < 1.0f) {
+                if (!person1.defeated() && !person2.defeated()) {
+                    person1.fighting(person2);
+                    person2.fighting(person1);
+                    timer = 100.0f;
                 } else {
-                    state = State::FADE_OUT;
+                    state = State::REACTION;
                 }
+            }
+        } else if (state == State::REACTION) {
+            if (person1.defeated()) {
+                person1.fly_away();
+                ++current_person1;
+            }
+            if (person2.defeated()) {
+                person2.fly_away();
+                ++current_person2;
+            }
+            if (current_person1 < team1.size() && current_person2 < team2.size()) {
+                state = State::PREPARE;
+            } else {
+                state = State::FADE_OUT;
             }
         }
     } else if (state == State::FADE_OUT) {
