@@ -7,7 +7,7 @@ namespace game {
 
 class Background {
 public:
-    Background(float width, float height, int index);
+    Background(float width, float height, const unsigned char *image, std::size_t image_size);
 
     void draw();
 private:

@@ -19,6 +19,9 @@ bool Scene::run() {
                 switch (event.key.keysym.sym) {
                 case SDLK_ESCAPE:
                     return false;
+                default:
+                    on_key_pressed(event.key.keysym.sym);
+                    break;
                 }
                 break;
             }
@@ -35,3 +38,5 @@ bool Scene::run() {
 void Scene::exit() {
     finished = true;
 }
+
+void Scene::on_key_pressed(SDL_Keycode code) {}

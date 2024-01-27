@@ -1,17 +1,13 @@
 #include "background.h"
 
-#include <test_background.png.h>
-#include <test_background2.png.h>
-
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace game {
 
-Background::Background(float width, float height, int index)
+Background::Background(float width, float height, const unsigned char *image, std::size_t image_size)
   : width(width),
     height(height),
-    sprite(index == 0 ? test_background : test_background2,
-           index == 0 ? sizeof(test_background) : sizeof(test_background2), 1, 1),
+    sprite(image, image_size, 1, 1),
     renderer(sprite, width, height)
 { }
 

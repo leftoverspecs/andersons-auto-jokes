@@ -41,6 +41,7 @@ convert_to_header(treelayer3.png treelayer3)
 
 convert_to_header(arena.png arena)
 convert_to_header(family.png family)
+convert_to_header(shop.png shop)
 
 add_library(test_assets INTERFACE
     "${CMAKE_CURRENT_SOURCE_DIR}/destination.frag"
@@ -131,5 +132,7 @@ add_library(game_assets INTERFACE
         ${CMAKE_CURRENT_BINARY_DIR}/arena.png.h
         ${CMAKE_CURRENT_SOURCE_DIR}/family.png
         ${CMAKE_CURRENT_BINARY_DIR}/family.png.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/shop.png
+        ${CMAKE_CURRENT_BINARY_DIR}/shop.png.h
 )
 target_include_directories(game_assets INTERFACE ${CMAKE_CURRENT_BINARY_DIR})

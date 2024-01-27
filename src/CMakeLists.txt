@@ -6,9 +6,9 @@ add_executable(game WIN32
         person.h
         fight.cpp
         fight.h
-        arena.cpp
-        arena.h
         scene.cpp
         scene.h
+        shop.h
+        shop.cpp
 )
 target_link_libraries(game PRIVATE game_assets boxyfont engine)

@@ -36,6 +36,7 @@ public:
     [[nodiscard]] bool arrived() const;
     [[nodiscard]] bool fought() const;
     [[nodiscard]] bool defeated() const;
+    [[nodiscard]] const Stats &get_stats() const { return stats; }
 private:
     enum class State {
         STANDING,

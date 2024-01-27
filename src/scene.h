@@ -22,6 +22,7 @@ private:
     bool finished{false};
 
     virtual void on_loop(float delta_time) = 0;
+    virtual void on_key_pressed(SDL_Keycode code);
 };
 
 

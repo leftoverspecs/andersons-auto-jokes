@@ -2,7 +2,7 @@
 
 #include <font.h>
 
-#include <cstdlib>
+#include <arena.png.h>
 
 Fight::Fight(SDL_Window *window,
              int screen_width, int screen_height,
@@ -14,7 +14,7 @@ Fight::Fight(SDL_Window *window,
       destination(screen_width, screen_height),
       family_renderer(family, screen_width, screen_height),
       box_renderer(screen_width, screen_height),
-      arena(screen_width, screen_height)
+      background(screen_width, screen_height, arena, sizeof(arena))
 {}
 
 void Fight::startup(const std::vector<Person::Stats> &team1_stats,
@@ -37,9 +37,10 @@ void Fight::startup(const std::vector<Person::Stats> &team1_stats,
         x -= 50.0f;
         team2.push_back(person);
     }
-    state = State::PREPARE;
+    state = State::FADE_IN;
     current_person1 = 0;
     current_person2 = 0;
+    alpha = 0.0f;
 }
 
 void Fight::update(float delta_time) {
@@ -48,7 +49,13 @@ void Fight::update(float delta_time) {
     } else {
         timer = 0.0f;
     }
-    if (state != State::IDLE && state != State::FINISHED) {
+    if (state == State::FADE_IN) {
+        alpha += delta_time * 0.001f;
+        if (alpha > 0.9f) {
+            alpha = 1.0f;
+            state = State::PREPARE;
+        }
+    } else if (state != State::FADE_OUT) {
         Person &person1 = team1[current_person1];
         Person &person2 = team2[current_person2];
         if (state == State::PREPARE) {
@@ -106,15 +113,21 @@ void Fight::update(float delta_time) {
                 if (current_person1 < team1.size() && current_person2 < team2.size()) {
                     state = State::PREPARE;
                 } else {
-                    state = State::FINISHED;
+                    state = State::FADE_OUT;
                 }
             }
+        }
+    } else if (state == State::FADE_OUT) {
+        alpha -= delta_time * 0.001f;
+        if (alpha < 0.001f) {
+            alpha = 0.0f;
+            exit();
         }
     }
 }
 
 Fight::Winner Fight::finished() const {
-    if (state != State::FINISHED) {
+    if (state != State::FADE_OUT) {
         return Winner::UNDECIDED;
     } else {
         bool team1_lost = current_person1 >= team1.size();
@@ -149,19 +162,12 @@ void Fight::on_loop(float delta_time) {
             person.update(delta_time);
             person.queue();
         }
-        arena.draw();
+        background.draw();
         family_renderer.draw();
         font.draw();
         box_renderer.draw();
     }
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    if (finished() != Fight::Winner::UNDECIDED) {
-        alpha -= delta_time * 0.001f;
-        if (alpha < 0.001f) {
-            alpha = 0.0f;
-            exit();
-        }
-    }
     destination.draw(glm::mat4(1.0f), glm::vec3(0.0f), alpha, glm::vec3(1.0f));
 }

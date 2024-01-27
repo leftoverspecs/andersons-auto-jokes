@@ -25,7 +25,7 @@ Person::Person(engine::SpriteRenderer &renderer,
 
 void Person::update(float delta_time) {
     time += delta_time;
-    const float speed = (state == State::LAUGHING ? 5.0f : 1.0f) * SPEED;
+    const float speed = (state == State::LAUGHING ? 10.0f : 1.0f) * SPEED;
     if (std::fabs(current_x - destination_x) < 1) {
         current_x = destination_x;
     } else if (current_x < destination_x) {

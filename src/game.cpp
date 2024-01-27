@@ -4,16 +4,14 @@
 #include <audio.h>
 #include <boxrenderer.h>
 #include <controller.h>
-#include <destination.h>
 #include <font.h>
 #include <image.h>
 
 #include <iostream>
 
-#include "arena.h"
-#include "background.h"
 #include "fight.h"
 #include "person.h"
+#include "shop.h"
 
 #include <family.png.h>
 
@@ -69,12 +67,6 @@ int main() {
 
     //engine::Audio audio(44100, MIX_DEFAULT_FORMAT, 2, 128);
 
-    game::Background background(WIDTH, HEIGHT, 0);
-    game::Background background2(WIDTH, HEIGHT, 1);
-    Arena arena(WIDTH, HEIGHT);
-    engine::Destination destination(WIDTH, HEIGHT);
-    engine::Destination destination2(WIDTH, HEIGHT);
-
     engine::Font font(WIDTH, HEIGHT, boxyfont, sizeof(boxyfont), assets::boxyfont_widths);
     engine::SpriteMap family_spritemap{family, sizeof(family), 8, 8};
     engine::SpriteRenderer family_renderer{family_spritemap, WIDTH, HEIGHT};
@@ -90,13 +82,17 @@ int main() {
     };
 
     Fight fight(window, WIDTH, HEIGHT, font, family_spritemap);
-    bool quit = false;
-    while (!quit) {
+    Shop shop(window, WIDTH, HEIGHT, font, family_spritemap);
+    while (true) {
+        shop.startup(team1);
+        if (!shop.run()) {
+            break;
+        }
+        team1 = shop.get_team();
         fight.startup(team1, team2);
         if (!fight.run()) {
-            quit = true;
+            break;
         }
-        quit = true;
     }
 
     SDL_GL_DeleteContext(context);

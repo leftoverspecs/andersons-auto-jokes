@@ -1,7 +1,7 @@
 #ifndef GGJ2024_FIGHT_H
 #define GGJ2024_FIGHT_H
 
-#include "arena.h"
+#include "background.h"
 #include "person.h"
 #include "scene.h"
 
@@ -35,7 +35,7 @@ private:
     };
 
     enum class State {
-        IDLE,
+        FADE_IN,
         PREPARE,
         PREPARING,
         BOTH_PREPARED,
@@ -44,7 +44,7 @@ private:
         SECOND_TALKING,
         TENSION,
         REACTION,
-        FINISHED,
+        FADE_OUT,
     };
 
     [[nodiscard]] Winner finished() const;
@@ -58,11 +58,11 @@ private:
     engine::SpriteRenderer family_renderer;
     engine::BoxRenderer box_renderer;
 
-    Arena arena;
+    game::Background background;
     std::vector<Person> team1;
     std::vector<Person> team2;
 
-    State state{State::IDLE};
+    State state{State::FADE_IN};
     float timer{0.0f};
     float alpha{1.0f};
     int current_person1{0};
