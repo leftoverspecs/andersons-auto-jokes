@@ -3,7 +3,6 @@
 
 #include <audio.h>
 #include <chunk.h>
-#include <music.h>
 
 #include <controller.h>
 #include <font.h>
@@ -35,9 +34,6 @@ const int WIDTH = 800;
 const int HEIGHT = 600;
 
 int main() {
-#ifndef WIN32
-    setenv("ALSA_CONFIG_DIR", "/usr/share/alsa", 1);
-#endif
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO) != 0) {
         std::cerr << SDL_GetError() << std::endl;
         return EXIT_FAILURE;
@@ -74,6 +70,7 @@ int main() {
     glViewport(0, 0, WIDTH, HEIGHT);
 
     engine::Audio audio(44100, MIX_DEFAULT_FORMAT, 2, 64);
+    game::AudioData audioData;
 
     engine::Font font(WIDTH, HEIGHT, boxyfont, sizeof(boxyfont), assets::boxyfont_widths);
     engine::SpriteMap family_spritemap{family, sizeof(family), 8, 9};

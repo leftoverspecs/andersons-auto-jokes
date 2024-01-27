@@ -5,7 +5,16 @@
 
 namespace game {
 
-extern const std::vector<engine::Chunk> snd_laugh;
-extern const engine::Chunk snd_steps;
+class AudioData {
+public:
+    AudioData();
+
+    [[nodiscard]] const engine::Chunk &geg_snd_laugh(int index) const { return snd_laugh.at(index); }
+    [[nodiscard]] const engine::Chunk &get_steps() const { return snd_steps; }
+
+private:
+    std::vector<engine::Chunk> snd_laugh;
+    engine::Chunk snd_steps;
+};
 
 }
