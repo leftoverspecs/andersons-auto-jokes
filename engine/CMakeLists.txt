@@ -52,7 +52,7 @@ target_link_libraries(engine PRIVATE
     SDL2::SDL2
     SDL2_image::SDL2_image
     GLEW::glew
-    assets
+    engine_assets
 )
 target_link_libraries(engine PUBLIC glm::glm SDL2_mixer::SDL2_mixer OpenGL::GL)
 target_include_directories(engine INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}")
