@@ -11,11 +11,13 @@ Shop::Shop(SDL_Window *window,
            engine::Font &font,
            engine::SpriteMap &family)
     : Scene(window),
+      screen_height{screen_height},
       font{font},
       family{family},
       destination(screen_width, screen_height),
       family_renderer(family, screen_width, screen_height),
       box_renderer(screen_width, screen_height),
+      textboxes{font, box_renderer},
       background(screen_width, screen_height, shop, sizeof(shop))
 {}
 
@@ -51,8 +53,8 @@ void Shop::on_loop(float delta_time) {
         }
         background.draw();
         family_renderer.draw();
-        font.draw();
         box_renderer.draw();
+        font.draw();
     }
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -64,7 +66,7 @@ void Shop::startup(const std::vector<Person::Stats> &old_team_stats) {
     team.reserve(old_team_stats.size());
     float x = 100.0f;
     for (const auto &s : old_team_stats) {
-        Person person{family_renderer, font, box_renderer, s};
+        Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
         person.stand(x, 300.0f);
         x += 50.0f;
         team.push_back(person);

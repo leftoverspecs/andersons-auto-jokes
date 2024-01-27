@@ -1,11 +1,14 @@
 #ifndef GGJ2024_PERSON_H
 #define GGJ2024_PERSON_H
 
+#include <string>
+
 namespace engine {
 
 class BoxRenderer;
 class SpriteRenderer;
 class Font;
+class TextBoxRenderer;
 
 }
 
@@ -18,11 +21,14 @@ public:
         float capacity;
         float funny;
         float giddy;
+        std::string description;
     };
 
-    Person(engine::SpriteRenderer &renderer,
+    Person(int screen_height,
+           engine::SpriteRenderer &renderer,
            engine::Font &font,
            engine::BoxRenderer &box,
+           engine::TextBoxRenderer &textboxes,
            const Stats &stats);
 
     void stand(float x, float y);
@@ -55,9 +61,11 @@ private:
         SERIOUS,
     };
 
+    int screen_height;
     engine::SpriteRenderer *renderer;
     engine::Font *font;
     engine::BoxRenderer *box;
+    engine::TextBoxRenderer *textboxes;
 
     State state{State::STANDING};
     float time{0};

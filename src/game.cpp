@@ -2,7 +2,6 @@
 #include <SDL.h>
 
 #include <audio.h>
-#include <boxrenderer.h>
 #include <controller.h>
 #include <font.h>
 #include <image.h>
@@ -69,16 +68,18 @@ int main() {
 
     engine::Font font(WIDTH, HEIGHT, boxyfont, sizeof(boxyfont), assets::boxyfont_widths);
     engine::SpriteMap family_spritemap{family, sizeof(family), 8, 8};
-    engine::SpriteRenderer family_renderer{family_spritemap, WIDTH, HEIGHT};
-    engine::BoxRenderer box{WIDTH, HEIGHT};
 
     std::vector<game::Person::Stats> team1{
-            game::Person::Stats{0, 10.0, 1.0, 5.0},
-            game::Person::Stats{0, 10.0, 5.0, 2.0},
+            game::Person::Stats{0, 10.0, 1.0, 1.0, "Big Sister"},
+            game::Person::Stats{0, 10.0, 5.0, 3.0, "Dad"},
+            game::Person::Stats{0, 10.0, 1.0, 5.0, "Little Brother"},
+            game::Person::Stats{0, 10.0, 1.0, 0.5, "Mum"},
     };
     std::vector<game::Person::Stats> team2{
-            game::Person::Stats{0, 10.0, 5.0, 2.0},
-            game::Person::Stats{0, 10.0, 1.0, 5.0},
+            game::Person::Stats{0, 10.0, 1.0, 1.0, "Big Sister"},
+            game::Person::Stats{0, 10.0, 5.0, 3.0, "Dad"},
+            game::Person::Stats{0, 10.0, 1.0, 5.0, "Little Brother"},
+            game::Person::Stats{0, 10.0, 1.0, 0.5, "Mum"},
     };
 
     game::Fight fight(window, WIDTH, HEIGHT, font, family_spritemap);

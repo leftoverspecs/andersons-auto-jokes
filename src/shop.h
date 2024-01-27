@@ -8,6 +8,7 @@
 #include <boxrenderer.h>
 #include <destination.h>
 #include <spriterenderer.h>
+#include <textboxrenderer.h>
 
 namespace engine {
 
@@ -35,12 +36,14 @@ private:
         FADE_OUT,
     };
 
+    int screen_height;
     engine::Font &font;
     engine::SpriteMap &family;
 
     engine::Destination destination;
     engine::SpriteRenderer family_renderer;
     engine::BoxRenderer box_renderer;
+    engine::TextBoxRenderer textboxes;
 
     game::Background background;
     std::vector<Person> team;

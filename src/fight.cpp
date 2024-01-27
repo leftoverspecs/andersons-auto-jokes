@@ -11,11 +11,13 @@ Fight::Fight(SDL_Window *window,
              engine::Font &font,
              engine::SpriteMap &family)
     : Scene(window),
+      screen_height{screen_height},
       font{font},
       family{family},
       destination(screen_width, screen_height),
       family_renderer(family, screen_width, screen_height),
       box_renderer(screen_width, screen_height),
+      textboxes(font, box_renderer),
       background(screen_width, screen_height, arena, sizeof(arena)) {}
 
 void Fight::startup(const std::vector<Person::Stats> &team1_stats,
@@ -24,7 +26,7 @@ void Fight::startup(const std::vector<Person::Stats> &team1_stats,
     team1.reserve(team1_stats.size());
     float x = 100.0f;
     for (const auto &s: team1_stats) {
-        Person person{family_renderer, font, box_renderer, s};
+        Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
         person.stand(x, 50.0f);
         x += 50.0f;
         team1.push_back(person);
@@ -33,7 +35,7 @@ void Fight::startup(const std::vector<Person::Stats> &team1_stats,
     team2.clear();
     team2.reserve(team2_stats.size());
     for (const auto &s: team2_stats) {
-        Person person{family_renderer, font, box_renderer, s};
+        Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
         person.stand(x, 50.0f);
         x -= 50.0f;
         team2.push_back(person);
@@ -165,8 +167,8 @@ void Fight::on_loop(float delta_time) {
         }
         background.draw();
         family_renderer.draw();
-        font.draw();
         box_renderer.draw();
+        font.draw();
     }
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);

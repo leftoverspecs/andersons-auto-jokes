@@ -3,9 +3,11 @@
 #include <boxrenderer.h>
 #include <font.h>
 #include <spriterenderer.h>
+#include <textboxrenderer.h>
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <iostream>
+
+#include <SDL_mouse.h>
 
 namespace {
 
@@ -16,11 +18,13 @@ const float CAPACITY_CHANGE = 0.05;
 
 namespace game {
 
-Person::Person(engine::SpriteRenderer &renderer,
+Person::Person(int screen_height, engine::SpriteRenderer &renderer,
                engine::Font &font,
                engine::BoxRenderer &box,
+               engine::TextBoxRenderer &textboxes,
                const Stats &stats)
-    : renderer{&renderer}, font{&font}, box{&box},
+    : screen_height{screen_height},
+      renderer{&renderer}, font{&font}, box{&box}, textboxes{&textboxes},
       state{State::STANDING},
       current_capacity{stats.capacity}, destination_capacity{stats.capacity},
       stats{stats} {}
@@ -67,12 +71,18 @@ void Person::walk_to(float x, float y) {
 }
 
 void Person::queue() {
+    int x;
+    int y;
+    SDL_GetMouseState(&x, &y);
+    y = screen_height - y;
+    bool inside = x >= current_x && x <= current_x + 32.0f && y >= current_y && y <= current_y + 32.0f;
+
     const int current_sprite_column = 0; //static_cast<int>(state) * 4 + static_cast<int>(time / 1000.0) % 4;
     glm::mat4 model{1.0f};
     model = glm::translate(model, glm::vec3(current_x, current_y, 0.0f));
     model = glm::rotate(model, current_angle, glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::scale(model, glm::vec3(32.0f, 32.0f, 1.0f));
-    renderer->queue(model, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), current_sprite_column, stats.sprite_row);
+    renderer->queue(model, glm::vec4(1.0f, 1.0f, 1.0f, inside ? 1.0f : 0.5f), current_sprite_column, stats.sprite_row);
 
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(current_x - 10.0f, current_y - 10.0f, 0.0f));
@@ -88,6 +98,10 @@ void Person::queue() {
     model = glm::translate(model, glm::vec3(current_x, current_y + 32.0f, 0.0f));
     model = glm::scale(model, glm::vec3(std::max(current_capacity * 4, 0.0f), 10.0f, 1.0f));
     box->queue_frame(model, glm::vec4(1.0f - current_capacity / stats.capacity, current_capacity / stats.capacity, 0.0f, 1.0f));
+
+    if (inside) {
+        textboxes->queue(current_x + 50.0f, current_y - 20.0f, 300.0f, 100.0f, 2.0f, 3.0f, stats.description, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+    }
 }
 
 bool Person::arrived() const {
