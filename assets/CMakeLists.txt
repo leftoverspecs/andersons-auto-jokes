@@ -21,6 +21,14 @@ convert_to_header(test_sprite.png test_sprite)
 convert_to_header(test_spritemap.png test_spritemap)
 convert_to_header(blib_afx1.wav blib_afx1)
 convert_to_header(blib_afx2.wav blib_afx2)
+convert_to_header(snd_laugh_child1.wav)
+convert_to_header(snd_laugh_female1.wav)
+convert_to_header(snd_laugh_female2.wav)
+convert_to_header(snd_laugh_male1.wav)
+convert_to_header(snd_laugh_male2.wav)
+convert_to_header(snd_laugh_male3.wav)
+convert_to_header(snd_steps.wav)
+convert_to_header(snd_steps2.wav)
 
 add_library(test_assets INTERFACE
     "${CMAKE_CURRENT_SOURCE_DIR}/blib.wav"
@@ -47,6 +55,22 @@ add_library(test_assets INTERFACE
     "${CMAKE_CURRENT_BINARY_DIR}/blib_afx1.wav.h"
     "${CMAKE_CURRENT_BINARY_DIR}/blib_afx2.wav"
     "${CMAKE_CURRENT_BINARY_DIR}/blib_afx2.wav.h"
+    "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_child1.wav"
+    "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_child1.wav.h"
+    "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_female1.wav"
+    "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_female1.wav.h"
+    "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_female2.wav"
+    "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_female2.wav.h"
+    "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_male1.wav"
+    "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_male1.wav.h"
+    "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_male2.wav"
+    "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_male2.wav.h"
+    "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_male3.wav"
+    "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_male3.wav.h"
+    "${CMAKE_CURRENT_BINARY_DIR}/snd_steps.wav"
+    "${CMAKE_CURRENT_BINARY_DIR}/snd_steps.wav.h"
+    "${CMAKE_CURRENT_BINARY_DIR}/snd_steps2.wav"
+    "${CMAKE_CURRENT_BINARY_DIR}/snd_steps2.wav.h"
 )
 target_include_directories(test_assets INTERFACE "${CMAKE_CURRENT_BINARY_DIR}")
 

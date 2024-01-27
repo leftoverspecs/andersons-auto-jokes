@@ -1,0 +1,28 @@
+snd_laugh_child1.wav
+- https://freesound.org/people/Martina_Leitschuh/sounds/582659/
+- CC BY 4.0 Deed - Attribution 4.0 International 
+
+snd_laugh_female1.wav
+- https://freesound.org/people/Kalibrk/sounds/433921/
+- CC0 1.0 Deed - CC0 1.0 Universal
+
+snd_laugh_female2.wav
+- https://freesound.org/people/ivanmilic/sounds/557529/
+- CC0 1.0 Deed - CC0 1.0 Universal 
+
+snd_laugh_male1.wav
+- https://freesound.org/people/jealoussiblingprison/sounds/367738/
+- CC BY-NC 3.0 Deed - Attribution-NonCommercial 3.0 Unported 
+
+snd_laugh_male2.wav
+- https://freesound.org/people/Nanakisan/sounds/366176/
+- CC BY 4.0 Deed - Attribution 4.0 International 
+
+snd_laugh_male3.wav
+- https://freesound.org/people/Nanakisan/sounds/253528/
+- CC BY 4.0 Deed - Attribution 4.0 International 
+
+snd_steps2.wav
+snd_steps.wav
+- https://freesound.org/people/Hawkeye_Sprout/sounds/469049/
+- CC BY 4.0 Deed - Attribution 4.0 International
