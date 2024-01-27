@@ -28,16 +28,8 @@ convert_to_header(sprite.frag sprite_frag)
 
 convert_to_header(box.vert box_vert)
 convert_to_header(box.frag box_frag)
-convert_to_header(chestnut.png chestnut)
 convert_to_header(dust.png dust)
 convert_to_header(glow.png glow)
-convert_to_header(player.png player)
-convert_to_header(player2.png player2)
-convert_to_header(leaves.png leaves)
-convert_to_header(song.mp3 song)
-convert_to_header(treelayer1.png treelayer1)
-convert_to_header(treelayer2.png treelayer2)
-convert_to_header(treelayer3.png treelayer3)
 
 convert_to_header(arena.png arena)
 convert_to_header(family.png family)
@@ -83,8 +75,6 @@ add_library(assets INTERFACE
     "${CMAKE_CURRENT_BINARY_DIR}/box.frag.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/box.vert"
     "${CMAKE_CURRENT_BINARY_DIR}/box.vert.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/chestnut.png"
-    "${CMAKE_CURRENT_BINARY_DIR}/chestnut.png.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/destination.frag"
     "${CMAKE_CURRENT_BINARY_DIR}/destination.frag.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/destination.vert"
@@ -97,24 +87,10 @@ add_library(assets INTERFACE
     "${CMAKE_CURRENT_BINARY_DIR}/glow.png.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/logo.png"
     "${CMAKE_CURRENT_BINARY_DIR}/logo.png.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/player.png"
-    "${CMAKE_CURRENT_BINARY_DIR}/player.png.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/player2.png"
-    "${CMAKE_CURRENT_BINARY_DIR}/player2.png.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/song.mp3"
-    "${CMAKE_CURRENT_BINARY_DIR}/song.mp3.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/sprite.frag"
     "${CMAKE_CURRENT_BINARY_DIR}/sprite.frag.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/sprite.vert"
     "${CMAKE_CURRENT_BINARY_DIR}/sprite.vert.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/leaves.png"
-    "${CMAKE_CURRENT_BINARY_DIR}/leaves.png.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/treelayer1.png"
-    "${CMAKE_CURRENT_BINARY_DIR}/treelayer1.png.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/treelayer2.png"
-    "${CMAKE_CURRENT_BINARY_DIR}/treelayer2.png.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/treelayer3.png"
-    "${CMAKE_CURRENT_BINARY_DIR}/treelayer3.png.h"
 )
 target_include_directories(assets INTERFACE "${CMAKE_CURRENT_BINARY_DIR}")
 target_include_directories(assets INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}")
