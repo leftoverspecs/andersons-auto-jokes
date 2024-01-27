@@ -22,6 +22,14 @@ snd_laugh_male3.wav
 - https://freesound.org/people/Nanakisan/sounds/253528/
 - CC BY 4.0 Deed - Attribution 4.0 International 
 
+snd_laugh_male4.wav
+- https://freesound.org/people/Nicolas4677/sounds/446584/
+- CC0 1.0 Deed - CC0 1.0 Universal
+
+snd_laugh_male4.wav
+- https://freesound.org/people/deleted_user_2104797/sounds/166133/
+- CC0 1.0 Deed - CC0 1.0 Universal 
+
 snd_steps2.wav
 snd_steps.wav
 - https://freesound.org/people/Hawkeye_Sprout/sounds/469049/
