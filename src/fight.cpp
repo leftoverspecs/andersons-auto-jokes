@@ -24,7 +24,7 @@ void Fight::startup(const std::vector<const common::Stats *> &team1_stats,
                     const std::vector<const common::Stats *> &team2_stats) {
     team1.clear();
     team1.reserve(team1_stats.size());
-    float x = 50.0f;
+    float x = 20.0f;
     for (const auto s: team1_stats) {
         if (!s->is_empty()) {
             Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
@@ -66,29 +66,35 @@ void Fight::update(float delta_time) {
         Person &person1 = team1[team1.size() - current_person1 - 1];
         Person &person2 = team2[team2.size() - current_person2 - 1];
         if (state == State::PREPARE) {
-            person1.walk_to(350.0f, 250.0f);
+            person1.walk_to(250.0f, 250.0f);
             person2.walk_to(450.0f, 250.0f);
             state = State::PREPARING;
         } else if (state == State::PREPARING) {
+            if (person1.arrived()) {
+                person1.stand_still();
+            }
+            if (person2.arrived()) {
+                person2.stand_still();
+            }
             if (person1.arrived() && person2.arrived()) {
                 state = State::BOTH_PREPARED;
             }
         } else if (state == State::BOTH_PREPARED) {
-            timer = 2000.0f;
+            timer = 1000.0f;
             state = State::STARING;
         } else if (state == State::STARING) {
             if (timer < 1.0f) {
                 state = State::FIRST_TALKING;
                 person1.talk();
                 person2.hear();
-                timer = 1000.0f;
+                timer = 4000.0f;
             }
         } else if (state == State::FIRST_TALKING) {
             if (timer < 1.0f) {
                 state = State::SECOND_TALKING;
                 person1.hear();
                 person2.talk();
-                timer = 1000.0f;
+                timer = 4000.0f;
             }
         } else if (state == State::SECOND_TALKING) {
             if (timer < 1.0f) {
@@ -101,7 +107,7 @@ void Fight::update(float delta_time) {
                 if (!person1.defeated() && !person2.defeated()) {
                     person1.fighting(current_person1, person2, current_person2, team1, team2);
                     person2.fighting(current_person2, person1, current_person1, team2, team1);
-                    timer = 100.0f;
+                    timer = 200.0f;
                 } else {
                     state = State::REACTION;
                 }

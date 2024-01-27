@@ -27,6 +27,7 @@ public:
            const common::Stats *prototype);
 
     void stand(float x, float y, bool looks_right_);
+    void stand_still();
     void update(float delta_time);
     void walk_to(float x, float y);
     void fly_away();

@@ -50,8 +50,6 @@ void Person::update(float delta_time) {
         current_capacity = destination_capacity;
         if (current_capacity < 1.0f) {
             state = State::LAUGHING;
-        } else {
-            state = State::SERIOUS;
         }
     } else {
         current_capacity -= CAPACITY_CHANGE * delta_time;
@@ -82,37 +80,48 @@ void Person::queue(bool silent) {
     const bool inside = this->inside(x, y);
     const float inside_extra = inside ? 1.0f : 0.0f;
 
-    const int current_sprite_column = 0; //static_cast<int>(state) * 4 + static_cast<int>(time / 1000.0) % 4;
+    int current_sprite_column = 0;
+    if (state == State::LAUGHING) {
+        current_sprite_column = 4;
+    } else if (state == State::WALKING) {
+        current_sprite_column = static_cast<int>(time / 500.0f) % 2 + 1;
+    } else if (state == State::STANDING) {
+        current_sprite_column = 3 * (static_cast<int>(time / 500.0f) % 2);
+    } else if (state == State::TALKING) {
+        current_sprite_column = 5 * (static_cast<int>(time / 500.0f) % 2);
+    } else if (state == State::HEARING) {
+        current_sprite_column = 0;
+    }
     glm::mat4 model{1.0f};
     if (looks_right) {
         model = glm::translate(model, glm::vec3(current_x, current_y, 0.0f));
         model = glm::rotate(model, current_angle, glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(64.0f, 128.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(128.0f, 256.0f, 1.0f));
     } else {
-        model = glm::translate(model, glm::vec3(current_x + 64.0f, current_y, 0.0f));
+        model = glm::translate(model, glm::vec3(current_x + 128.0f, current_y, 0.0f));
         model = glm::rotate(model, current_angle, glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(-64.0f, 128.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(-128.0f, 256.0f, 1.0f));
     }
     renderer->queue(model, glm::vec4(1.0f + inside_extra, 1.0f + inside_extra, 1.0f + inside_extra, 1.0f), current_sprite_column, current_stats.get_sprite_row());
 
     if (!current_stats.is_empty() && state != State::LAUGHING) {
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(current_x + 10.0f, current_y - 10.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(20.0f, 20.0f, 1.0f));
+        model = glm::translate(model, glm::vec3(current_x + 30.0f, current_y - 20.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(40.0f, 40.0f, 1.0f));
         font->write(model, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), std::to_string(static_cast<int>(current_stats.get_giddy())).c_str());
 
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(current_x + 54.0f, current_y - 10.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(20.0f, 20.0f, 1.0f));
+        model = glm::translate(model, glm::vec3(current_x + 90.0f, current_y - 20.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(40.0f, 40.0f, 1.0f));
         font->write(model, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), std::to_string(static_cast<int>(current_stats.get_funny())).c_str());
 
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(current_x, current_y + 138.0f, 0.0f));
+        model = glm::translate(model, glm::vec3(current_x + 30.0, current_y + 270.0f, 0.0f));
         model = glm::scale(model, glm::vec3(std::max(current_capacity * 6, 0.0f), 10.0f, 1.0f));
         box->queue_frame(model, glm::vec4(1.0f - current_capacity / current_stats.get_capacity(), current_capacity / current_stats.get_capacity(), 0.0f, 1.0f));
 
         if (inside && !silent) {
-            textboxes->queue(current_x + 50.0f, current_y - 20.0f, 300.0f, 40.0f, 2.0f, 3.0f, current_stats.get_description(), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+            textboxes->queue(current_x + 50.0f, current_y + 350.0f, 300.0f, 40.0f, 2.0f, 3.0f, current_stats.get_description(), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
         }
     }
 }
@@ -123,7 +132,7 @@ bool Person::arrived() const {
 
 void Person::fly_away() {
     state = State::LAUGHING;
-    destination_y = 800;
+    destination_y = 1000.0f;
 }
 
 void Person::talk() {
@@ -152,7 +161,7 @@ void Person::hear() {
 }
 
 bool Person::inside(int x, int y) const {
-    return x >= current_x && x <= current_x + 64.0f && y >= current_y && y <= current_y + 128.0f;
+    return x >= current_x && x <= current_x + 128.0f && y >= current_y && y <= current_y + 256.0f;
 }
 
 void Person::drop(const common::Stats *new_prototype) {
@@ -160,6 +169,10 @@ void Person::drop(const common::Stats *new_prototype) {
     prototype = new_prototype;
     current_capacity = prototype->get_capacity();
     destination_capacity = prototype->get_capacity();
+    state = State::STANDING;
+}
+void Person::stand_still() {
+    state = State::STANDING;
 }
 
 }

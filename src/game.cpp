@@ -76,7 +76,7 @@ int main() {
     engine::Audio audio(44100, MIX_DEFAULT_FORMAT, 2, 64);
 
     engine::Font font(WIDTH, HEIGHT, boxyfont, sizeof(boxyfont), assets::boxyfont_widths);
-    engine::SpriteMap family_spritemap{family, sizeof(family), 8, 8};
+    engine::SpriteMap family_spritemap{family, sizeof(family), 8, 9};
 
     common::Stats empty;
     common::Stats dad{"Dad", 1, 10.0, 5.0, 1.0};
@@ -88,7 +88,7 @@ int main() {
     std::vector<const common::Stats *> available{
         &dad,
         &mum,
-        &big_sister,
+        //&big_sister,
         &little_brother,
         &uncle,
     };

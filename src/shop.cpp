@@ -81,21 +81,21 @@ void Shop::startup(const std::vector<const common::Stats *> &old_team,
                    const std::vector<const common::Stats *> &new_available) {
     team.clear();
     team.reserve(old_team.size());
-    float x = 100.0f;
+    float x = 40.0f;
     for (const auto s : old_team) {
         Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
-        person.stand(x, 400.0f, true);
-        x += 100.0f;
+        person.stand(x, 50.0f, true);
+        x += 180.0f;
         team.push_back(person);
     }
 
     available.clear();
     available.reserve(new_available.size());
-    x = 100.0f;
+    x = 25.0f;
     for (const auto s : new_available) {
         Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
-        person.stand(x, 100.0f, true);
-        x += 100.0f;
+        person.stand(x, 320.0f, true);
+        x += 177.0f;
         available.push_back(person);
     }
 
