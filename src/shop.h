@@ -26,19 +26,22 @@ public:
           engine::Font &font,
           engine::SpriteMap &family);
 
-    void startup(const std::vector<Person::Stats> &old_team_stats);
-    [[nodiscard]] std::vector<Person::Stats> get_team() const;
+    void startup(const std::vector<const Person::Stats *> &old_team,
+                 const std::vector<const Person::Stats *> &new_available);
+
+    [[nodiscard]] std::vector<const Person::Stats *> get_team() const;
 
 private:
     enum class State {
         FADE_IN,
         SHOPPING,
+        DRAGGING,
+        DROPPING,
         FADE_OUT,
     };
 
     int screen_height;
     engine::Font &font;
-    engine::SpriteMap &family;
 
     engine::Destination destination;
     engine::SpriteRenderer family_renderer;
@@ -47,6 +50,12 @@ private:
 
     game::Background background;
     std::vector<Person> team;
+    std::vector<Person> available;
+
+    Person *dragging{nullptr};
+    float dragging_initial_x{0};
+    float dragging_initial_y{0};
+    Person *dragging_source{nullptr};
 
     State state{State::FADE_IN};
     float alpha{0.0f};
@@ -54,6 +63,8 @@ private:
     void update(float delta_time);
     void on_loop(float delta_time) override;
     void on_key_pressed(SDL_Keycode code) override;
+    void on_mouse_button_down(int x, int y) override;
+    void on_mouse_button_up(int x, int y) override;
 };
 
 }

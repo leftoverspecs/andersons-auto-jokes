@@ -10,7 +10,7 @@ Fight::Fight(SDL_Window *window,
              int screen_width, int screen_height,
              engine::Font &font,
              engine::SpriteMap &family)
-    : Scene(window),
+    : Scene(screen_height, window),
       screen_height{screen_height},
       font{font},
       family{family},
@@ -20,25 +20,29 @@ Fight::Fight(SDL_Window *window,
       textboxes(font, box_renderer),
       background(screen_width, screen_height, arena, sizeof(arena)) {}
 
-void Fight::startup(const std::vector<Person::Stats> &team1_stats,
-                    const std::vector<Person::Stats> &team2_stats) {
+void Fight::startup(const std::vector<const Person::Stats *> &team1_stats,
+                    const std::vector<const Person::Stats *> &team2_stats) {
     team1.clear();
     team1.reserve(team1_stats.size());
     float x = 100.0f;
-    for (const auto &s: team1_stats) {
-        Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
-        person.stand(x, 50.0f);
-        x += 50.0f;
-        team1.push_back(person);
+    for (const auto s: team1_stats) {
+        if (s->sprite_row > 0) {
+            Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
+            person.stand(x, 50.0f, true);
+            x += 50.0f;
+            team1.push_back(person);
+        }
     }
     x = 700.0f;
     team2.clear();
     team2.reserve(team2_stats.size());
-    for (const auto &s: team2_stats) {
-        Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
-        person.stand(x, 50.0f);
-        x -= 50.0f;
-        team2.push_back(person);
+    for (const auto s: team2_stats) {
+        if (s->sprite_row > 0) {
+            Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
+            person.stand(x, 50.0f, false);
+            x -= 50.0f;
+            team2.push_back(person);
+        }
     }
     state = State::FADE_IN;
     current_person1 = 0;
@@ -59,8 +63,8 @@ void Fight::update(float delta_time) {
             state = State::PREPARE;
         }
     } else if (state != State::FADE_OUT) {
-        Person &person1 = team1[current_person1];
-        Person &person2 = team2[current_person2];
+        Person &person1 = team1[team1.size() - current_person1 - 1];
+        Person &person2 = team2[team2.size() - current_person2 - 1];
         if (state == State::PREPARE) {
             person1.walk_to(350.0f, 100.0f);
             person2.walk_to(450.0f, 100.0f);
@@ -89,14 +93,14 @@ void Fight::update(float delta_time) {
         } else if (state == State::SECOND_TALKING) {
             if (timer < 1.0f) {
                 state = State::TENSION;
-                person1.fighting(person2);
-                person2.fighting(person1);
+                person1.fighting(current_person1, person2, current_person2, team1, team2);
+                person2.fighting(current_person2, person1, current_person1, team2, team1);
             }
         } else if (state == State::TENSION) {
             if (timer < 1.0f) {
                 if (!person1.defeated() && !person2.defeated()) {
-                    person1.fighting(person2);
-                    person2.fighting(person1);
+                    person1.fighting(current_person1, person2, current_person2, team1, team2);
+                    person2.fighting(current_person2, person1, current_person1, team2, team1);
                     timer = 100.0f;
                 } else {
                     state = State::REACTION;
@@ -156,11 +160,11 @@ void Fight::on_loop(float delta_time) {
         update(delta_time);
         for (auto &person: team1) {
             person.update(delta_time);
-            person.queue();
+            person.queue(true);
         }
         for (auto &person: team2) {
             person.update(delta_time);
-            person.queue();
+            person.queue(true);
         }
         background.draw();
         family_renderer.draw();

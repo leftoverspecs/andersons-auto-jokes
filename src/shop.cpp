@@ -2,6 +2,7 @@
 
 #include <font.h>
 
+#include <iostream>
 #include <shop.png.h>
 
 namespace game {
@@ -10,10 +11,9 @@ Shop::Shop(SDL_Window *window,
            int screen_width, int screen_height,
            engine::Font &font,
            engine::SpriteMap &family)
-    : Scene(window),
+    : Scene(screen_height, window),
       screen_height{screen_height},
       font{font},
-      family{family},
       destination(screen_width, screen_height),
       family_renderer(family, screen_width, screen_height),
       box_renderer(screen_width, screen_height),
@@ -34,6 +34,14 @@ void Shop::update(float delta_time) {
             alpha = 0.0f;
             exit();
         }
+    } else if (state == State::DRAGGING) {
+        if (dragging) {
+            int x;
+            int y;
+            SDL_GetMouseState(&x, &y);
+            y = screen_height - y;
+            dragging->stand(x, y, true);
+        }
     }
 }
 
@@ -49,7 +57,15 @@ void Shop::on_loop(float delta_time) {
         update(delta_time);
         for (auto &person : team) {
             person.update(delta_time);
-            person.queue();
+            person.queue(false);
+        }
+        for (auto &person : available) {
+            person.update(delta_time);
+            person.queue(false);
+        }
+        if (dragging) {
+            dragging->update(delta_time);
+            dragging->queue(true);
         }
         background.draw();
         family_renderer.draw();
@@ -61,24 +77,36 @@ void Shop::on_loop(float delta_time) {
     destination.draw(glm::mat4(1.0f), glm::vec3(0.0f), alpha, glm::vec3(1.0f));
 }
 
-void Shop::startup(const std::vector<Person::Stats> &old_team_stats) {
+void Shop::startup(const std::vector<const Person::Stats *> &old_team,
+                   const std::vector<const Person::Stats *> &new_available) {
     team.clear();
-    team.reserve(old_team_stats.size());
+    team.reserve(old_team.size());
     float x = 100.0f;
-    for (const auto &s : old_team_stats) {
+    for (const auto s : old_team) {
         Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
-        person.stand(x, 300.0f);
+        person.stand(x, 300.0f, true);
         x += 100.0f;
         team.push_back(person);
     }
+
+    available.clear();
+    available.reserve(new_available.size());
+    x = 100.0f;
+    for (const auto s : new_available) {
+        Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
+        person.stand(x, 100.0f, true);
+        x += 100.0f;
+        available.push_back(person);
+    }
+
     state = State::FADE_IN;
     alpha = 0.0f;
 }
 
-std::vector<Person::Stats> Shop::get_team() const {
-    std::vector<Person::Stats> result;
+std::vector<const Person::Stats *> Shop::get_team() const {
+    std::vector<const Person::Stats *> result;
     for (const auto &p : team) {
-        result.push_back(p.get_stats());
+        result.push_back(p.get_stats_prototype());
     }
     return result;
 }
@@ -86,6 +114,50 @@ std::vector<Person::Stats> Shop::get_team() const {
 void Shop::on_key_pressed(SDL_Keycode code) {
     if (code == SDLK_RETURN) {
         state = State::FADE_OUT;
+    } else if (code == SDLK_PAGEUP) {
+        destination.set_gamma(destination.get_gamma() + 0.1f);
+    } else if (code == SDLK_PAGEDOWN) {
+        destination.set_gamma(destination.get_gamma() - 0.1f);
+    } else if (code == SDLK_UP) {
+        destination.set_exposure(destination.get_exposure() + 0.1f);
+    } else if (code == SDLK_DOWN) {
+        destination.set_exposure(destination.get_exposure() - 0.1f);
+    }
+}
+
+void Shop::on_mouse_button_down(int x, int y) {
+    std::cout << "button down\n";
+    if (state == State::SHOPPING) {
+        for (auto &p: available) {
+            if (p.inside(x, y)) {
+                std::cout << "dragging\n";
+                dragging = &p;
+                dragging_initial_x = p.get_current_x();
+                dragging_initial_y = p.get_current_y();
+                dragging_source = &p;
+                state = State::DRAGGING;
+                break;
+            }
+        }
+    }
+}
+
+void Shop::on_mouse_button_up(int x, int y) {
+    std::cout << "button up\n";
+    if (state == State::DRAGGING && dragging != nullptr) {
+        for (auto &p : team) {
+            if (p.inside(x, y)) {
+                std::cout << "dropping onto\n";
+                game::Person::Stats empty{0};
+                p.drop(dragging->get_stats_prototype());
+                dragging_source->drop(&empty);
+                break;
+            }
+        }
+        dragging->stand(dragging_initial_x, dragging_initial_y, true);
+        dragging = nullptr;
+        dragging_source = nullptr;
+        state = State::SHOPPING;
     }
 }
 

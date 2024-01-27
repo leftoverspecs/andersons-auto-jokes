@@ -2,6 +2,7 @@
 #define GGJ2024_PERSON_H
 
 #include <string>
+#include <vector>
 
 namespace engine {
 
@@ -29,17 +30,21 @@ public:
            engine::Font &font,
            engine::BoxRenderer &box,
            engine::TextBoxRenderer &textboxes,
-           const Stats &stats);
+           const Stats *prototype);
 
-    void stand(float x, float y);
+    void stand(float x, float y, bool looks_right);
     void update(float delta_time);
     void walk_to(float x, float y);
     void fly_away();
     void talk();
     void hear();
-    void fighting(const Person &other);
+    void fighting(int own_position,
+                  const Person &opponent,
+                  int opponent_position,
+                  std::vector<Person> &team,
+                  std::vector<Person> &opponents);
 
-    void queue();
+    void queue(bool silent);
 
     [[nodiscard]]
     bool arrived() const;
@@ -47,9 +52,14 @@ public:
     bool fought() const;
     [[nodiscard]]
     bool defeated() const;
-    [[nodiscard]]
-    const Stats &get_stats() const { return stats; }
 
+    void drop(const Stats *new_prototype);
+
+    float get_current_x() const { return current_x; }
+    float get_current_y() const { return current_y; }
+
+    [[nodiscard]] const Stats *get_stats_prototype() const { return prototype; }
+    [[nodiscard]] bool inside(int x, int y) const;
 private:
     enum class State {
         STANDING,
@@ -72,12 +82,14 @@ private:
     float current_angle{0};
     float current_x{0};
     float current_y{0};
+    bool looks_right{true};
     float destination_x{0};
     float destination_y{0};
     float current_capacity;
     float destination_capacity;
 
-    Stats stats;
+    const Stats *prototype;
+    Stats current_stats;
 };
 
 }

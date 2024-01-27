@@ -80,34 +80,49 @@ int main() {
     glViewport(0, 0, WIDTH, HEIGHT);
 
     engine::Audio audio(44100, MIX_DEFAULT_FORMAT, 2, 64);
-    engine::Chunk snd_laugh_child1(snd_laugh_child1, sizeof(snd_laugh_child1));
-    engine::Chunk snd_laugh_female1(snd_laugh_female1, sizeof(snd_laugh_female1));
-    engine::Chunk snd_laugh_female2(snd_laugh_female2, sizeof(snd_laugh_female2));
-    engine::Chunk snd_laugh_male1(snd_laugh_male1, sizeof(snd_laugh_male1));
-    engine::Chunk snd_laugh_male2(snd_laugh_male2, sizeof(snd_laugh_male2));
-    engine::Chunk snd_laugh_male3(snd_laugh_male3, sizeof(snd_laugh_male3));
-    engine::Chunk snd_steps(snd_steps2, sizeof(snd_steps2));
+    engine::Chunk chunk_snd_laugh_child1(snd_laugh_child1, sizeof(snd_laugh_child1));
+    engine::Chunk chunk_snd_laugh_female1(snd_laugh_female1, sizeof(snd_laugh_female1));
+    engine::Chunk chunk_snd_laugh_female2(snd_laugh_female2, sizeof(snd_laugh_female2));
+    engine::Chunk chunk_snd_laugh_male1(snd_laugh_male1, sizeof(snd_laugh_male1));
+    engine::Chunk chunk_snd_laugh_male2(snd_laugh_male2, sizeof(snd_laugh_male2));
+    engine::Chunk chunk_snd_laugh_male3(snd_laugh_male3, sizeof(snd_laugh_male3));
+    engine::Chunk chunk_snd_steps(snd_steps2, sizeof(snd_steps2));
 
     engine::Font font(WIDTH, HEIGHT, boxyfont, sizeof(boxyfont), assets::boxyfont_widths);
     engine::SpriteMap family_spritemap{family, sizeof(family), 8, 8};
 
-    std::vector<game::Person::Stats> team1{
-            game::Person::Stats{0, 10.0, 1.0, 1.0, "Big Sister"},
-            game::Person::Stats{0, 10.0, 5.0, 3.0, "Dad"},
-            game::Person::Stats{0, 10.0, 1.0, 5.0, "Little Brother"},
-            game::Person::Stats{0, 10.0, 1.0, 0.5, "Mum"},
+    game::Person::Stats empty{0, 0.0f, 0.0f, 0.0f, ""};
+    game::Person::Stats dad{1, 10.0, 5.0, 1.0, "Dad"};
+    game::Person::Stats mum{2, 10.0, 1.0, 0.5, "Mum"};
+    game::Person::Stats big_sister{3, 10.0, 1.0, 1.0, "Big Sister"};
+    game::Person::Stats little_brother{4, 10.0, 1.0, 5.0, "Little Brother"};
+    game::Person::Stats uncle{5, 10.0, 5.0, 3.0, "Uncle"};
+
+    std::vector<const game::Person::Stats *> available{
+        &dad,
+        &mum,
+        &big_sister,
+        &little_brother,
+        &uncle,
     };
-    std::vector<game::Person::Stats> team2{
-            game::Person::Stats{0, 10.0, 5.0, 3.0, "Dad"},
-            game::Person::Stats{0, 10.0, 1.0, 0.5, "Mum"},
-            game::Person::Stats{0, 10.0, 1.0, 1.0, "Big Sister"},
-            game::Person::Stats{0, 10.0, 1.0, 5.0, "Little Brother"},
+
+    std::vector<const game::Person::Stats *> team1{
+            &empty,
+            &empty,
+            &empty,
+            &empty,
+    };
+    std::vector<const game::Person::Stats *> team2{
+            &dad,
+            &mum,
+            &big_sister,
+            &little_brother,
     };
 
     game::Fight fight(window, WIDTH, HEIGHT, font, family_spritemap);
     game::Shop shop(window, WIDTH, HEIGHT, font, family_spritemap);
     while (true) {
-        shop.startup(team1);
+        shop.startup(team1, available);
         if (!shop.run()) {
             break;
         }

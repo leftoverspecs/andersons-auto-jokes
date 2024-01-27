@@ -4,7 +4,8 @@
 
 namespace game {
 
-Scene::Scene(SDL_Window *window) : window{window} {}
+Scene::Scene(int screen_height, SDL_Window *window)
+    : screen_height{screen_height}, window{window} {}
 
 Scene::~Scene() = default;
 
@@ -26,6 +27,16 @@ bool Scene::run() {
                     break;
                 }
                 break;
+            case SDL_MOUSEBUTTONUP:
+                if (event.button.button == SDL_BUTTON_LEFT) {
+                    on_mouse_button_up(event.button.x, screen_height - event.button.y);
+                }
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                if (event.button.button == SDL_BUTTON_LEFT) {
+                    on_mouse_button_down(event.button.x, screen_height - event.button.y);
+                }
+                break;
             }
         }
 
@@ -42,5 +53,7 @@ void Scene::exit() {
 }
 
 void Scene::on_key_pressed(SDL_Keycode code) {}
+void Scene::on_mouse_button_down(int x, int y) {}
+void Scene::on_mouse_button_up(int x, int y) {}
 
 }

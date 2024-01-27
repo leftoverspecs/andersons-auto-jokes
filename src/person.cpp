@@ -22,12 +22,12 @@ Person::Person(int screen_height, engine::SpriteRenderer &renderer,
                engine::Font &font,
                engine::BoxRenderer &box,
                engine::TextBoxRenderer &textboxes,
-               const Stats &stats)
+               const Stats *prototype)
     : screen_height{screen_height},
       renderer{&renderer}, font{&font}, box{&box}, textboxes{&textboxes},
       state{State::STANDING},
-      current_capacity{stats.capacity}, destination_capacity{stats.capacity},
-      stats{stats} {}
+      current_capacity{prototype->capacity}, destination_capacity{prototype->capacity},
+      prototype{prototype}, current_stats{*prototype} {}
 
 void Person::update(float delta_time) {
     time += delta_time;
@@ -58,10 +58,11 @@ void Person::update(float delta_time) {
     }
 }
 
-void Person::stand(float x, float y) {
+void Person::stand(float x, float y, bool looks_right) {
     state = State::STANDING;
     current_x = destination_x = x;
     current_y = destination_y = y;
+    this->looks_right = looks_right;
 }
 
 void Person::walk_to(float x, float y) {
@@ -70,37 +71,46 @@ void Person::walk_to(float x, float y) {
     destination_y = y;
 }
 
-void Person::queue() {
+void Person::queue(bool silent) {
     int x;
     int y;
     SDL_GetMouseState(&x, &y);
     y = screen_height - y;
-    bool inside = x >= current_x && x <= current_x + 32.0f && y >= current_y && y <= current_y + 32.0f;
+    const bool inside = this->inside(x, y);
+    const float inside_extra = inside ? 1.0f : 0.0f;
 
     const int current_sprite_column = 0; //static_cast<int>(state) * 4 + static_cast<int>(time / 1000.0) % 4;
     glm::mat4 model{1.0f};
-    model = glm::translate(model, glm::vec3(current_x, current_y, 0.0f));
-    model = glm::rotate(model, current_angle, glm::vec3(0.0f, 0.0f, 1.0f));
-    model = glm::scale(model, glm::vec3(32.0f, 32.0f, 1.0f));
-    renderer->queue(model, glm::vec4(1.0f, 1.0f, 1.0f, inside ? 1.0f : 0.5f), current_sprite_column, stats.sprite_row);
+    if (looks_right) {
+        model = glm::translate(model, glm::vec3(current_x, current_y, 0.0f));
+        model = glm::rotate(model, current_angle, glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(64.0f, 128.0f, 1.0f));
+    } else {
+        model = glm::translate(model, glm::vec3(current_x + 64.0f, current_y, 0.0f));
+        model = glm::rotate(model, current_angle, glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(-64.0f, 128.0f, 1.0f));
+    }
+    renderer->queue(model, glm::vec4(1.0f + inside_extra, 1.0f + inside_extra, 1.0f + inside_extra, 1.0f), current_sprite_column, current_stats.sprite_row);
 
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(current_x - 10.0f, current_y - 10.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(20.0f, 20.0f, 1.0f));
-    font->write(model, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), std::to_string(static_cast<int>(stats.giddy)).c_str());
+    if (current_stats.sprite_row > 0) {
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(current_x + 10.0f, current_y - 10.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(20.0f, 20.0f, 1.0f));
+        font->write(model, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), std::to_string(static_cast<int>(current_stats.giddy)).c_str());
 
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(current_x + 32.0f, current_y - 10.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(20.0f, 20.0f, 1.0f));
-    font->write(model, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), std::to_string(static_cast<int>(stats.funny)).c_str());
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(current_x + 54.0f, current_y - 10.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(20.0f, 20.0f, 1.0f));
+        font->write(model, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), std::to_string(static_cast<int>(current_stats.funny)).c_str());
 
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(current_x, current_y + 32.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(std::max(current_capacity * 4, 0.0f), 10.0f, 1.0f));
-    box->queue_frame(model, glm::vec4(1.0f - current_capacity / stats.capacity, current_capacity / stats.capacity, 0.0f, 1.0f));
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(current_x, current_y + 138.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(std::max(current_capacity * 6, 0.0f), 10.0f, 1.0f));
+        box->queue_frame(model, glm::vec4(1.0f - current_capacity / current_stats.capacity, current_capacity / current_stats.capacity, 0.0f, 1.0f));
 
-    if (inside) {
-        textboxes->queue(current_x + 50.0f, current_y - 20.0f, 300.0f, 100.0f, 2.0f, 3.0f, stats.description, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+        if (inside && !silent) {
+            textboxes->queue(current_x + 50.0f, current_y - 20.0f, 300.0f, 40.0f, 2.0f, 3.0f, current_stats.description, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+        }
     }
 }
 
@@ -117,9 +127,13 @@ void Person::talk() {
     state = State::TALKING;
 }
 
-void Person::fighting(const Person &other) {
+void Person::fighting(int own_position,
+                      const Person &opponent,
+                      int opponent_position,
+                      std::vector<Person> &team,
+                      std::vector<Person> &opponents) {
     state = State::FIGHTING;
-    destination_capacity -= other.stats.funny * stats.giddy;
+    destination_capacity -= opponent.current_stats.funny * current_stats.giddy;
 }
 
 bool Person::fought() const {
@@ -132,6 +146,17 @@ bool Person::defeated() const {
 
 void Person::hear() {
     state = State::HEARING;
+}
+
+bool Person::inside(int x, int y) const {
+    return x >= current_x && x <= current_x + 64.0f && y >= current_y && y <= current_y + 128.0f;
+}
+
+void Person::drop(const Person::Stats *new_prototype) {
+    current_stats = *new_prototype;
+    prototype = new_prototype;
+    current_capacity = prototype->capacity;
+    destination_capacity = prototype->capacity;
 }
 
 }
