@@ -39,6 +39,9 @@ convert_to_header(treelayer1.png treelayer1)
 convert_to_header(treelayer2.png treelayer2)
 convert_to_header(treelayer3.png treelayer3)
 
+convert_to_header(arena.png arena)
+convert_to_header(family.png family)
+
 add_library(test_assets INTERFACE
     "${CMAKE_CURRENT_SOURCE_DIR}/destination.frag"
     "${CMAKE_CURRENT_BINARY_DIR}/destination.frag.h"
@@ -122,3 +125,11 @@ add_library(boxyfont STATIC
         ${CMAKE_CURRENT_BINARY_DIR}/boxyfont.png.h)
 target_include_directories(boxyfont PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(boxyfont INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
+
+add_library(game_assets INTERFACE
+        ${CMAKE_CURRENT_SOURCE_DIR}/arena.png
+        ${CMAKE_CURRENT_BINARY_DIR}/arena.png.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/family.png
+        ${CMAKE_CURRENT_BINARY_DIR}/family.png.h
+)
+target_include_directories(game_assets INTERFACE ${CMAKE_CURRENT_BINARY_DIR})

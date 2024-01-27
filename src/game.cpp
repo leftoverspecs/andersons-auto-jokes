@@ -2,16 +2,23 @@
 #include <SDL.h>
 
 #include <audio.h>
+#include <boxrenderer.h>
 #include <controller.h>
 #include <destination.h>
+#include <font.h>
 #include <image.h>
 
 #include <iostream>
-#include <string>
 
-#include <glm/gtx/transform.hpp>
-
+#include "arena.h"
 #include "background.h"
+#include "fight.h"
+#include "person.h"
+
+#include <family.png.h>
+
+#include <boxyfont.h>
+#include <boxyfont.png.h>
 
 #ifdef _WIN32
 extern "C" {
@@ -64,53 +71,32 @@ int main() {
 
     game::Background background(WIDTH, HEIGHT, 0);
     game::Background background2(WIDTH, HEIGHT, 1);
+    Arena arena(WIDTH, HEIGHT);
     engine::Destination destination(WIDTH, HEIGHT);
     engine::Destination destination2(WIDTH, HEIGHT);
 
+    engine::Font font(WIDTH, HEIGHT, boxyfont, sizeof(boxyfont), assets::boxyfont_widths);
+    engine::SpriteMap family_spritemap{family, sizeof(family), 8, 8};
+    engine::SpriteRenderer family_renderer{family_spritemap, WIDTH, HEIGHT};
+    engine::BoxRenderer box{WIDTH, HEIGHT};
+
+    std::vector<Person::Stats> team1{
+            Person::Stats{0, 10.0, 1.0, 5.0},
+            Person::Stats{0, 10.0, 5.0, 2.0},
+    };
+    std::vector<Person::Stats> team2{
+            Person::Stats{0, 10.0, 5.0, 2.0},
+            Person::Stats{0, 10.0, 1.0, 5.0},
+    };
+
+    Fight fight(window, WIDTH, HEIGHT, font, family_spritemap);
     bool quit = false;
-    Uint64 last = SDL_GetTicks64();
     while (!quit) {
-        SDL_Event event;
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-            case SDL_QUIT:
-                quit = true;
-                break;
-            case SDL_KEYUP:
-                switch (event.key.keysym.sym) {
-                case SDLK_ESCAPE:
-                    quit = true;
-                    break;
-                }
-                break;
-            }
+        fight.startup(team1, team2);
+        if (!fight.run()) {
+            quit = true;
         }
-        const Uint64 next = SDL_GetTicks64();
-        const Uint64 diff = next - last;
-        last = next;
-        {
-            auto binding = destination.bind_as_target();
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
-
-            background.draw();
-        }
-        {
-            auto binding = destination2.bind_as_target();
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
-
-            background2.draw();
-        }
-        const float alpha = 0.5f * std::sin(2 * next * M_PI / 5000.0f) + 0.5f;
-        destination.draw(glm::translate(glm::vec3(0.0f, 0.0f, 0.0f)), glm::vec3(0.0f), alpha, glm::vec3(1.0f));
-        destination2.draw(glm::translate(glm::vec3(0.0f, 0.0f, 0.0f)), glm::vec3(0.0f), 1.0f - alpha, glm::vec3(1.0f));
-        SDL_GL_SwapWindow(window);
-
-        if (diff > 0) {
-            const float fps = 1000.0f / static_cast<float>(diff);
-            SDL_SetWindowTitle(window, std::to_string(fps).c_str());
-        }
+        quit = true;
     }
 
     SDL_GL_DeleteContext(context);
