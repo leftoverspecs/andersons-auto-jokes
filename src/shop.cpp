@@ -77,14 +77,14 @@ void Shop::on_loop(float delta_time) {
     destination.draw(glm::mat4(1.0f), glm::vec3(0.0f), alpha, glm::vec3(1.0f));
 }
 
-void Shop::startup(const std::vector<const Person::Stats *> &old_team,
-                   const std::vector<const Person::Stats *> &new_available) {
+void Shop::startup(const std::vector<const common::Stats *> &old_team,
+                   const std::vector<const common::Stats *> &new_available) {
     team.clear();
     team.reserve(old_team.size());
     float x = 100.0f;
     for (const auto s : old_team) {
         Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
-        person.stand(x, 300.0f, true);
+        person.stand(x, 400.0f, true);
         x += 100.0f;
         team.push_back(person);
     }
@@ -103,8 +103,8 @@ void Shop::startup(const std::vector<const Person::Stats *> &old_team,
     alpha = 0.0f;
 }
 
-std::vector<const Person::Stats *> Shop::get_team() const {
-    std::vector<const Person::Stats *> result;
+std::vector<const common::Stats *> Shop::get_team() const {
+    std::vector<const common::Stats *> result;
     for (const auto &p : team) {
         result.push_back(p.get_stats_prototype());
     }
@@ -148,7 +148,7 @@ void Shop::on_mouse_button_up(int x, int y) {
         for (auto &p : team) {
             if (p.inside(x, y)) {
                 std::cout << "dropping onto\n";
-                game::Person::Stats empty{0};
+                common::Stats empty;
                 p.drop(dragging->get_stats_prototype());
                 dragging_source->drop(&empty);
                 break;

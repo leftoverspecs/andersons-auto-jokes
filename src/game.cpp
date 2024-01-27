@@ -91,14 +91,14 @@ int main() {
     engine::Font font(WIDTH, HEIGHT, boxyfont, sizeof(boxyfont), assets::boxyfont_widths);
     engine::SpriteMap family_spritemap{family, sizeof(family), 8, 8};
 
-    game::Person::Stats empty{0, 0.0f, 0.0f, 0.0f, ""};
-    game::Person::Stats dad{1, 10.0, 5.0, 1.0, "Dad"};
-    game::Person::Stats mum{2, 10.0, 1.0, 0.5, "Mum"};
-    game::Person::Stats big_sister{3, 10.0, 1.0, 1.0, "Big Sister"};
-    game::Person::Stats little_brother{4, 10.0, 1.0, 5.0, "Little Brother"};
-    game::Person::Stats uncle{5, 10.0, 5.0, 3.0, "Uncle"};
+    common::Stats empty;
+    common::Stats dad{"Dad", 1, 10.0, 5.0, 1.0};
+    common::Stats mum{"Mum", 2, 10.0, 1.0, 0.5};
+    common::Stats big_sister{"Big Sister", 3, 10.0, 1.0, 1.0};
+    common::Stats little_brother{"Little Brother", 4, 10.0, 1.0, 5.0};
+    common::Stats uncle{"Uncle", 5, 10.0, 5.0, 3.0};
 
-    std::vector<const game::Person::Stats *> available{
+    std::vector<const common::Stats *> available{
         &dad,
         &mum,
         &big_sister,
@@ -106,13 +106,13 @@ int main() {
         &uncle,
     };
 
-    std::vector<const game::Person::Stats *> team1{
+    std::vector<const common::Stats *> team1{
             &empty,
             &empty,
             &empty,
             &empty,
     };
-    std::vector<const game::Person::Stats *> team2{
+    std::vector<const common::Stats *> team2{
             &dad,
             &mum,
             &big_sister,

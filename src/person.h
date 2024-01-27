@@ -1,6 +1,8 @@
 #ifndef GGJ2024_PERSON_H
 #define GGJ2024_PERSON_H
 
+#include <stats.h>
+
 #include <string>
 #include <vector>
 
@@ -17,22 +19,14 @@ namespace game {
 
 class Person {
 public:
-    struct Stats {
-        int sprite_row;
-        float capacity;
-        float funny;
-        float giddy;
-        std::string description;
-    };
-
     Person(int screen_height,
            engine::SpriteRenderer &renderer,
            engine::Font &font,
            engine::BoxRenderer &box,
            engine::TextBoxRenderer &textboxes,
-           const Stats *prototype);
+           const common::Stats *prototype);
 
-    void stand(float x, float y, bool looks_right);
+    void stand(float x, float y, bool looks_right_);
     void update(float delta_time);
     void walk_to(float x, float y);
     void fly_away();
@@ -53,12 +47,12 @@ public:
     [[nodiscard]]
     bool defeated() const;
 
-    void drop(const Stats *new_prototype);
+    void drop(const common::Stats *new_prototype);
 
     float get_current_x() const { return current_x; }
     float get_current_y() const { return current_y; }
 
-    [[nodiscard]] const Stats *get_stats_prototype() const { return prototype; }
+    [[nodiscard]] const common::Stats *get_stats_prototype() const { return prototype; }
     [[nodiscard]] bool inside(int x, int y) const;
 private:
     enum class State {
@@ -88,8 +82,8 @@ private:
     float current_capacity;
     float destination_capacity;
 
-    const Stats *prototype;
-    Stats current_stats;
+    const common::Stats *prototype;
+    common::Stats current_stats;
 };
 
 }

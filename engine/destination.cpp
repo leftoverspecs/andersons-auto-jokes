@@ -26,8 +26,8 @@ const int ATTRIBUTE_TEXTURE_COORD = 1;
 Destination::Destination(GLsizei screen_width, GLsizei screen_height)
   : screen_width(screen_width),
     screen_height(screen_height),
-    gamma(0.4f),
-    exposure(6.0f)
+    gamma(0.2f),
+    exposure(4.0f)
 {
     shader.attach(Shader(GL_VERTEX_SHADER, reinterpret_cast<const char *>(destination_vert), sizeof(destination_vert)));
     shader.attach(Shader(GL_FRAGMENT_SHADER, reinterpret_cast<const char *>(destination_frag), sizeof(destination_frag)));

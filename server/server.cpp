@@ -8,6 +8,7 @@
 #include <initialize.h>
 #include <map>
 #include <message.h>
+#include <stats.h>
 #include <transmit.h>
 
 class handler {
@@ -190,28 +191,54 @@ class test_handler : public handler {
 public:
     common::message receive(int id, const common::message &received) override {
         const std::vector<uint8_t> &content = received.get_content();
-        const std::string message{content.data(), content.data() + content.size()};
         switch (received.get_type()) {
-        case common::message::type::OK:
+        case common::message::type::OK: {
+            const std::string message{content.data(), content.data() + content.size()};
             std::cout << "Client " << id << ": OK, \"" << message << "\"\n";
             return common::message{common::message::type::OK};
-        case common::message::type::ERROR:
+        }
+        case common::message::type::ERROR: {
+            const std::string message{content.data(), content.data() + content.size()};
             std::cout << "Client " << id << ": ERROR, \"" << message << "\"\n";
             return common::message{common::message::type::OK};
-        case common::message::type::CLIENT_HELLO:
+        }
+        case common::message::type::CLIENT_HELLO: {
+            const std::string message{content.data(), content.data() + content.size()};
             std::cout << "Client " << id << ": CLIENT_HELLO, \"" << message << "\"\n";
             if (on_client_hello(id, message)) {
                 return common::message{common::message::type::OK};
             } else {
                 return common::message{common::message::type::ERROR, "Can't accept new client"};
             }
-        case common::message::type::CLIENT_QUIT:
+        }
+        case common::message::type::CLIENT_QUIT: {
+            const std::string message{content.data(), content.data() + content.size()};
             std::cout << "Client " << id << ": CLIENT_QUIT, \"" << message << "\"\n";
             on_client_quit(id);
             return common::message{common::message::type::CLIENT_QUIT};
-        case common::message::type::SERVER_QUIT:
+        }
+        case common::message::type::SERVER_QUIT: {
+            const std::string message{content.data(), content.data() + content.size()};
             std::cout << "Client " << id << ": SERVER_QUIT, \"" << message << "\"\n";
             return common::message{common::message::type::CLIENT_QUIT};
+        }
+        case common::message::type::BATTLE: {
+            auto pos = content.begin();
+            std::vector<common::Stats> stats = common::read_stats(pos, content.end());
+            std::cout << "Client " << id << ": BATTLE\n";
+            queue.emplace(id, stats);
+            auto it = queue.begin();
+            while (it != queue.end()) {
+                const auto opponent_stats = it->second;
+                if (opponent_stats.size() == stats.size()) {
+                    queue.erase(it);
+                    return common::message{common::message::type::OPPONENT, opponent_stats};
+                }
+            }
+            return common::message{common::message::type::RETRY};
+        }
+        default:
+            return common::message{common::message::type::ERROR, "Unexpected message type"};
         }
     }
 
@@ -221,6 +248,8 @@ public:
 
 private:
     std::map<int, std::string> players;
+    std::map<int, std::vector<common::Stats>> queue;
+
 
     bool on_client_hello(int id, const std::string &name) {
         if (players.find(id) != players.end()) {

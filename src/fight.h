@@ -26,8 +26,8 @@ public:
           engine::Font &font,
           engine::SpriteMap &family);
 
-    void startup(const std::vector<const Person::Stats *> &team1_stats,
-                 const std::vector<const Person::Stats *> &team2_stats);
+    void startup(const std::vector<const common::Stats *> &team1_stats,
+                 const std::vector<const common::Stats *> &team2_stats);
 
 private:
     enum class Winner {

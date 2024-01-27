@@ -26,10 +26,10 @@ public:
           engine::Font &font,
           engine::SpriteMap &family);
 
-    void startup(const std::vector<const Person::Stats *> &old_team,
-                 const std::vector<const Person::Stats *> &new_available);
+    void startup(const std::vector<const common::Stats *> &old_team,
+                 const std::vector<const common::Stats *> &new_available);
 
-    [[nodiscard]] std::vector<const Person::Stats *> get_team() const;
+    [[nodiscard]] std::vector<const common::Stats *> get_team() const;
 
 private:
     enum class State {

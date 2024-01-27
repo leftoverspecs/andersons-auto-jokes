@@ -20,16 +20,16 @@ Fight::Fight(SDL_Window *window,
       textboxes(font, box_renderer),
       background(screen_width, screen_height, arena, sizeof(arena)) {}
 
-void Fight::startup(const std::vector<const Person::Stats *> &team1_stats,
-                    const std::vector<const Person::Stats *> &team2_stats) {
+void Fight::startup(const std::vector<const common::Stats *> &team1_stats,
+                    const std::vector<const common::Stats *> &team2_stats) {
     team1.clear();
     team1.reserve(team1_stats.size());
-    float x = 100.0f;
+    float x = 50.0f;
     for (const auto s: team1_stats) {
-        if (s->sprite_row > 0) {
+        if (!s->is_empty()) {
             Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
-            person.stand(x, 50.0f, true);
-            x += 50.0f;
+            person.stand(x, 150.0f, true);
+            x += 70.0f;
             team1.push_back(person);
         }
     }
@@ -37,10 +37,10 @@ void Fight::startup(const std::vector<const Person::Stats *> &team1_stats,
     team2.clear();
     team2.reserve(team2_stats.size());
     for (const auto s: team2_stats) {
-        if (s->sprite_row > 0) {
+        if (!s->is_empty()) {
             Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
-            person.stand(x, 50.0f, false);
-            x -= 50.0f;
+            person.stand(x, 150.0f, false);
+            x -= 70.0f;
             team2.push_back(person);
         }
     }
@@ -66,8 +66,8 @@ void Fight::update(float delta_time) {
         Person &person1 = team1[team1.size() - current_person1 - 1];
         Person &person2 = team2[team2.size() - current_person2 - 1];
         if (state == State::PREPARE) {
-            person1.walk_to(350.0f, 100.0f);
-            person2.walk_to(450.0f, 100.0f);
+            person1.walk_to(350.0f, 250.0f);
+            person2.walk_to(450.0f, 250.0f);
             state = State::PREPARING;
         } else if (state == State::PREPARING) {
             if (person1.arrived() && person2.arrived()) {
