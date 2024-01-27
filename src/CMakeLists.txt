@@ -1,4 +1,4 @@
-add_executable(game WIN32
+add_executable(andersonsautojokes WIN32
         background.cpp
         background.h
         game.cpp
@@ -11,4 +11,4 @@ add_executable(game WIN32
         shop.h
         shop.cpp
 )
-target_link_libraries(game PRIVATE game_assets boxyfont engine)
+target_link_libraries(andersonsautojokes PRIVATE game_assets boxyfont engine)

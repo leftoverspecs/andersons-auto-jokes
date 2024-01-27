@@ -60,7 +60,7 @@ int main() {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-    SDL_Window *const window = SDL_CreateWindow("Global Game Jam 2024!",
+    SDL_Window *const window = SDL_CreateWindow("Anderson's Auto Jokes",
                                                 SDL_WINDOWPOS_CENTERED,
                                                 SDL_WINDOWPOS_CENTERED,
                                                 WIDTH,

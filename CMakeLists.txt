@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.26)
-project(ggj2024 CXX)
+project(andersons_auto_jokes CXX)
 set(CMAKE_CXX_STANDARD 20)
 
 find_package(Python COMPONENTS Interpreter REQUIRED)
