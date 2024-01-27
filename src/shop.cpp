@@ -40,7 +40,7 @@ void Shop::update(float delta_time) {
             int y;
             SDL_GetMouseState(&x, &y);
             y = screen_height - y;
-            dragging->stand(x, y, true);
+            dragging->stand(x - 32.0f, y - 32.0f, true);
         }
     }
 }

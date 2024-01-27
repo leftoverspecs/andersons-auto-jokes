@@ -56,6 +56,9 @@ void Person::update(float delta_time) {
     } else {
         current_capacity -= CAPACITY_CHANGE * delta_time;
     }
+    if (current_stats.sprite_row > 0 && state == State::LAUGHING) {
+        current_angle += 0.1f;
+    }
 }
 
 void Person::stand(float x, float y, bool looks_right) {
@@ -92,7 +95,7 @@ void Person::queue(bool silent) {
     }
     renderer->queue(model, glm::vec4(1.0f + inside_extra, 1.0f + inside_extra, 1.0f + inside_extra, 1.0f), current_sprite_column, current_stats.sprite_row);
 
-    if (current_stats.sprite_row > 0) {
+    if (current_stats.sprite_row > 0 && state != State::LAUGHING) {
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(current_x + 10.0f, current_y - 10.0f, 0.0f));
         model = glm::scale(model, glm::vec3(20.0f, 20.0f, 1.0f));
@@ -120,7 +123,7 @@ bool Person::arrived() const {
 
 void Person::fly_away() {
     state = State::LAUGHING;
-    destination_y = 700;
+    destination_y = 800;
 }
 
 void Person::talk() {
