@@ -16,6 +16,8 @@ class SpriteMap;
 
 }
 
+namespace game {
+
 class Fight : public Scene {
 public:
     Fight(SDL_Window *window,
@@ -47,7 +49,8 @@ private:
         FADE_OUT,
     };
 
-    [[nodiscard]] Winner finished() const;
+    [[nodiscard]]
+    Winner finished() const;
     void update(float delta_time);
     void on_loop(float delta_time) override;
 
@@ -69,5 +72,6 @@ private:
     int current_person2{0};
 };
 
+}
 
 #endif//GGJ2024_FIGHT_H

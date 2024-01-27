@@ -2,6 +2,8 @@
 
 #include <SDL.h>
 
+namespace game {
+
 Scene::Scene(SDL_Window *window) : window{window} {}
 
 Scene::~Scene() = default;
@@ -40,3 +42,5 @@ void Scene::exit() {
 }
 
 void Scene::on_key_pressed(SDL_Keycode code) {}
+
+}

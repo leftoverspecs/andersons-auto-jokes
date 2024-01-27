@@ -72,17 +72,17 @@ int main() {
     engine::SpriteRenderer family_renderer{family_spritemap, WIDTH, HEIGHT};
     engine::BoxRenderer box{WIDTH, HEIGHT};
 
-    std::vector<Person::Stats> team1{
-            Person::Stats{0, 10.0, 1.0, 5.0},
-            Person::Stats{0, 10.0, 5.0, 2.0},
+    std::vector<game::Person::Stats> team1{
+            game::Person::Stats{0, 10.0, 1.0, 5.0},
+            game::Person::Stats{0, 10.0, 5.0, 2.0},
     };
-    std::vector<Person::Stats> team2{
-            Person::Stats{0, 10.0, 5.0, 2.0},
-            Person::Stats{0, 10.0, 1.0, 5.0},
+    std::vector<game::Person::Stats> team2{
+            game::Person::Stats{0, 10.0, 5.0, 2.0},
+            game::Person::Stats{0, 10.0, 1.0, 5.0},
     };
 
-    Fight fight(window, WIDTH, HEIGHT, font, family_spritemap);
-    Shop shop(window, WIDTH, HEIGHT, font, family_spritemap);
+    game::Fight fight(window, WIDTH, HEIGHT, font, family_spritemap);
+    game::Shop shop(window, WIDTH, HEIGHT, font, family_spritemap);
     while (true) {
         shop.startup(team1);
         if (!shop.run()) {

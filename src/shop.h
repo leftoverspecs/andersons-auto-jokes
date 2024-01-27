@@ -16,6 +16,8 @@ class SpriteMap;
 
 }
 
+namespace game {
+
 class Shop : public Scene {
 public:
     Shop(SDL_Window *window,
@@ -51,5 +53,6 @@ private:
     void on_key_pressed(SDL_Keycode code) override;
 };
 
+}
 
 #endif//GGJ2024_SHOP_H

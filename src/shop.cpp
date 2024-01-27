@@ -4,6 +4,8 @@
 
 #include <shop.png.h>
 
+namespace game {
+
 Shop::Shop(SDL_Window *window,
            int screen_width, int screen_height,
            engine::Font &font,
@@ -83,4 +85,6 @@ void Shop::on_key_pressed(SDL_Keycode code) {
     if (code == SDLK_RETURN) {
         state = State::FADE_OUT;
     }
+}
+
 }

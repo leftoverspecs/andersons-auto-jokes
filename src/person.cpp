@@ -14,6 +14,8 @@ const float CAPACITY_CHANGE = 0.05;
 
 }
 
+namespace game {
+
 Person::Person(engine::SpriteRenderer &renderer,
                engine::Font &font,
                engine::BoxRenderer &box,
@@ -116,4 +118,6 @@ bool Person::defeated() const {
 
 void Person::hear() {
     state = State::HEARING;
+}
+
 }

@@ -4,6 +4,8 @@
 
 #include <arena.png.h>
 
+namespace game {
+
 Fight::Fight(SDL_Window *window,
              int screen_width, int screen_height,
              engine::Font &font,
@@ -14,15 +16,14 @@ Fight::Fight(SDL_Window *window,
       destination(screen_width, screen_height),
       family_renderer(family, screen_width, screen_height),
       box_renderer(screen_width, screen_height),
-      background(screen_width, screen_height, arena, sizeof(arena))
-{}
+      background(screen_width, screen_height, arena, sizeof(arena)) {}
 
 void Fight::startup(const std::vector<Person::Stats> &team1_stats,
-                  const std::vector<Person::Stats> &team2_stats) {
+                    const std::vector<Person::Stats> &team2_stats) {
     team1.clear();
     team1.reserve(team1_stats.size());
     float x = 100.0f;
-    for (const auto &s : team1_stats) {
+    for (const auto &s: team1_stats) {
         Person person{family_renderer, font, box_renderer, s};
         person.stand(x, 50.0f);
         x += 50.0f;
@@ -31,7 +32,7 @@ void Fight::startup(const std::vector<Person::Stats> &team1_stats,
     x = 700.0f;
     team2.clear();
     team2.reserve(team2_stats.size());
-    for (const auto &s : team2_stats) {
+    for (const auto &s: team2_stats) {
         Person person{family_renderer, font, box_renderer, s};
         person.stand(x, 50.0f);
         x -= 50.0f;
@@ -154,11 +155,11 @@ void Fight::on_loop(float delta_time) {
         font.clear();
         box_renderer.clear();
         update(delta_time);
-        for (auto &person : team1) {
+        for (auto &person: team1) {
             person.update(delta_time);
             person.queue();
         }
-        for (auto &person : team2) {
+        for (auto &person: team2) {
             person.update(delta_time);
             person.queue();
         }
@@ -170,4 +171,6 @@ void Fight::on_loop(float delta_time) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     destination.draw(glm::mat4(1.0f), glm::vec3(0.0f), alpha, glm::vec3(1.0f));
+}
+
 }

@@ -5,6 +5,8 @@
 
 #include <SDL.h>
 
+namespace game {
+
 class Scene {
 public:
     explicit Scene(SDL_Window *window);
@@ -16,7 +18,6 @@ public:
     void exit();
 
 protected:
-
 private:
     SDL_Window *window;
     bool finished{false};
@@ -25,5 +26,6 @@ private:
     virtual void on_key_pressed(SDL_Keycode code);
 };
 
+}
 
 #endif//GGJ2024_SCENE_H
