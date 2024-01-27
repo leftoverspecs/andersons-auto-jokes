@@ -12,8 +12,20 @@ Chunk::Chunk(const unsigned char *data, std::size_t size)
     }
 }
 
+Chunk::Chunk(Chunk &&other) noexcept : chunk(other.chunk) {
+    other.chunk = nullptr;
+}
+
+Chunk &Chunk::operator = (Chunk &&other) noexcept {
+    chunk = other.chunk;
+    other.chunk = nullptr;
+    return *this;
+}
+
 Chunk::~Chunk() {
-    Mix_FreeChunk(chunk);
+    if (chunk != nullptr) {
+        Mix_FreeChunk(chunk);
+    }
 }
 
 void Chunk::play(int loops) const {
