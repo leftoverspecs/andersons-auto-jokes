@@ -34,7 +34,47 @@ snd_laugh_male4.wav
 - https://freesound.org/people/deleted_user_2104797/sounds/166133/
 - CC0 1.0 Deed - CC0 1.0 Universal 
 
+snd_mumble_child1.wav
+- https://freesound.org/people/chestnutjam/sounds/399288/
+- CC0 1.0 Deed - CC0 1.0 Universal 
+
+snd_mumble_female1.wav
+- https://freesound.org/people/pfranzen/sounds/264770/
+- CC BY 4.0 Deed - Attribution 4.0 International 
+
+snd_mumble_female2.wav
+- https://freesound.org/people/SilentStrikeZ/sounds/389642/
+- CC0 1.0 Deed - CC0 1.0 Universal 
+
+snd_mumble_male1.wav
+- https://freesound.org/people/so0rec/sounds/542589/
+- CC BY 4.0 Deed - Attribution 4.0 International 
+
+snd_mumble_male2.wav
+- https://freesound.org/people/so0rec/sounds/542589/
+- CC BY 4.0 Deed - Attribution 4.0 International 
+
+snd_mumble_male3.wav
+- https://freesound.org/people/elcharrua/sounds/530226/
+- CC BY 4.0 Deed - Attribution 4.0 International 
+
+snd_mumble_male4.wav
+- https://freesound.org/people/dersuperanton/sounds/435876/
+- CC BY 4.0 Deed - Attribution 4.0 International 
+
+snd_mumble_male5.wav
+- https://freesound.org/people/dynamique/sounds/536967/
+- CC0 1.0 Deed - CC0 1.0 Universal 
+
 snd_steps2.wav
 snd_steps.wav
 - https://freesound.org/people/Hawkeye_Sprout/sounds/469049/
 - CC BY 4.0 Deed - Attribution 4.0 International
+
+snd_drop.wav
+- https://freesound.org/people/dinoroki/sounds/680445/
+- CC0 1.0 Deed - CC0 1.0 Universal 
+
+snd_drag.wav
+- https://freesound.org/people/PapaJelly/sounds/542739/
+- CC BY-NC 3.0 Deed - Attribution-NonCommercial 3.0 Unported 
