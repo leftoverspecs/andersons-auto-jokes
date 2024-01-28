@@ -83,6 +83,14 @@ void Person::walk_to(float x, float y) {
     destination_y = y;
 }
 
+namespace {
+
+float clamp(float value, float min, float max) {
+    return std::min(std::max(value, min), max);
+}
+
+}
+
 void Person::queue(bool silent) {
     int x;
     int y;
@@ -132,9 +140,10 @@ void Person::queue(bool silent) {
         font->write(model, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), std::to_string(static_cast<int>(current_stats.get_funny())).c_str());
 
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(current_x + 30.0, current_y + 270.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(std::max(current_capacity * 6, 0.0f), 10.0f, 1.0f));
-        box->queue_frame(model, glm::vec4(1.0f - current_capacity / current_stats.get_capacity(), current_capacity / current_stats.get_capacity(), 0.0f, 1.0f));
+        model = glm::translate(model, glm::vec3(current_x + 10.0, current_y - 25.0f, 0.0f));
+        float relative_capacity = clamp(current_capacity / prototype->get_capacity(), 0.0f, 1.0f);
+        model = glm::scale(model, glm::vec3(118.0f * relative_capacity, 10.0f, 1.0f));
+        box->queue_frame(model, glm::vec4(1.0f - relative_capacity, relative_capacity, 0.0f, 1.0f));
 
         if (inside && !silent) {
             textboxes->queue(current_x + 50.0f, current_y + 350.0f, 300.0f, 40.0f, 2.0f, 3.0f, current_stats.get_description(), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));

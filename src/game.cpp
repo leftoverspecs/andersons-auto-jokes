@@ -1,10 +1,11 @@
 #include <GL/glew.h>
 #include <SDL.h>
 
-#include <audio.h>
-#include <chunk.h>
+#include <vector>
+#include <set>
+#include <random>
 
-#include <controller.h>
+#include <audio.h>
 #include <font.h>
 #include <image.h>
 #include <music.h>
@@ -38,6 +39,27 @@ _declspec(dllexport) uint32_t NvOptimusEnablement = 0x00000001;
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
+
+const common::Stats EMPTY;
+const common::Stats DAD{"Dad (Joke)",            2, 50.0, 5.0, 5.0, 0};
+const common::Stats MUM{"Serious Mum",           7, 10.0, 1.0, 1.0, 1};
+const common::Stats SISTER{"Cranky Sister",      3, 25.0, 2.0, 1.0, 2};
+const common::Stats BROTHER{"Pubescent Brother", 1, 15.0, 3.0, 1.0, 2};
+const common::Stats CHILD{"Volatile Child",      6, 10.0, 2.0, 5.0, 3};
+const common::Stats UNCLE{"Funny Muscle Uncle",  5, 25.0, 7.0, 4.0, 4};
+const common::Stats GRANDPA{"Grandpa",           4, 40.0, 7.0, 4.0, 5};
+const common::Stats GRANDMA{"Grandma",           8, 25.0, 3.0, 2.0, 6};
+
+const std::vector<const common::Stats *> ALL{
+        &DAD,
+        &MUM,
+        &SISTER,
+        &BROTHER,
+        &CHILD,
+        &UNCLE,
+        &GRANDPA,
+        &GRANDMA,
+};
 
 int main() {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO) != 0) {
@@ -90,23 +112,22 @@ int main() {
     engine::SpriteMap family_spritemap{family, sizeof(family), 8, 9};
     game::Background frame_renderer{WIDTH, HEIGHT, frame, sizeof(frame)};
 
-    const common::Stats empty;
-    const common::Stats dad{"Dad", 1, 10.0, 5.0, 1.0, 0};
-    const common::Stats mum{"Mum", 2, 10.0, 1.0, 0.5, 1};
-    const common::Stats big_sister{"Big Sister", 3, 10.0, 1.0, 1.0, 2};
-    const common::Stats little_brother{"Little Brother", 4, 10.0, 1.0, 5.0, 3};
-    const common::Stats uncle{"Uncle", 5, 10.0, 5.0, 3.0, 4};
+    std::set<const common::Stats *> remaining{ALL.begin(), ALL.end()};
+    std::set<const common::Stats *> deck;
 
-    const std::vector<const common::Stats *> all = {&empty, &dad, &mum, &big_sister, &little_brother, &uncle};
-    std::vector<const common::Stats *> available{&dad, &mum};
-    std::vector<const common::Stats *> team1{&empty};
+    std::mt19937 rng{std::random_device{}()};
+    std::sample(remaining.begin(), remaining.end(), std::inserter(deck, deck.end()), 2, rng);
+    for (const auto p : deck) {
+        remaining.erase(p);
+    }
+    std::vector<const common::Stats *> team1{&EMPTY};
 
     game::Shop shop(window, WIDTH, HEIGHT, font, speech, audio_data, family_spritemap);
     game::Fight fight(window, WIDTH, HEIGHT, font, speech, audio_data, family_spritemap);
     game::Result result(HEIGHT, window, frame_renderer, font);
     int losses = 0;
     while (true) {
-        shop.startup(team1, available);
+        shop.startup(team1, deck);
         if (!shop.run()) {
             break;
         }
@@ -130,9 +151,14 @@ int main() {
         if (!result.run()) {
             break;
         }
-        if (team1.size() + 2 < all.size()) {
-            team1.push_back(&empty);
-            available.push_back(all.at(team1.size() + 1));
+        if (team1.size() < 4) {
+            team1.push_back(&EMPTY);
+            if (deck.size() < 4) {
+                std::sample(remaining.begin(), remaining.end(), std::inserter(deck, deck.end()), 1, rng);
+                for (const auto p: deck) {
+                    remaining.erase(p);
+                }
+            }
         } else {
             break;
         }

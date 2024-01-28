@@ -3,7 +3,7 @@
 namespace common {
 
 Message receive(TCPsocket source) {
-    std::vector<uint8_t> buffer(256);
+    std::vector<uint8_t> buffer(1024);
     const int received = SDLNet_TCP_Recv(source, buffer.data(), static_cast<int>(buffer.size()));
     if (received <= 0) {
         throw std::runtime_error(std::string("Can't receive data: ") + SDLNet_GetError());

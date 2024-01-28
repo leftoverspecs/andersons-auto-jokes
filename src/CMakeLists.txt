@@ -20,3 +20,4 @@ add_executable(andersonsautojokes WIN32
         speech.h
 )
 target_link_libraries(andersonsautojokes PRIVATE game_assets boxyfont engine common)
+add_dependencies(andersonsautojokes server)

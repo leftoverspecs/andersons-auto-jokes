@@ -81,7 +81,7 @@ void Shop::on_loop(float delta_time) {
 }
 
 void Shop::startup(const std::vector<const common::Stats *> &old_team,
-                   const std::vector<const common::Stats *> &new_available) {
+                   const std::set<const common::Stats *> &new_available) {
     team.clear();
     team.reserve(old_team.size());
     float x = 40.0f;

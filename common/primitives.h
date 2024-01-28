@@ -73,10 +73,10 @@ void write_uint8(It &pos, uint8_t value) {
 
 template<typename It>
 void write_uint32(It &pos, uint32_t value) {
-    write_uint8(pos, (value & 0xf000) >> 24);
-    write_uint8(pos, (value & 0x0f00) >> 16);
-    write_uint8(pos, (value & 0x00f0) >> 8);
-    write_uint8(pos, value & 0x000f);
+    write_uint8(pos, (value & 0xff0000000) >> 24);
+    write_uint8(pos, (value & 0x00ff0000) >> 16);
+    write_uint8(pos, (value & 0x0000ff00) >> 8);
+    write_uint8(pos,  value & 0x000000ff);
 }
 
 template<typename It>
