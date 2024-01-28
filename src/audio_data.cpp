@@ -24,9 +24,10 @@
 namespace game {
 
 AudioData::AudioData()
-    : snd_steps(snd_steps2, sizeof(snd_steps2)){
-    : snd_drag(snd_drag, sizeof(snd_drag)){
-    : snd_drop(snd_drop, sizeof(snd_drop)){
+    : snd_steps(snd_steps2, sizeof(snd_steps2)),
+      drag_chunk(snd_drag, sizeof(snd_drag)),
+      drop_chunk(snd_drop, sizeof(snd_drop))
+{
     snd_laugh.emplace_back(snd_laugh_male1, sizeof(snd_laugh_male1));
     snd_laugh.emplace_back(snd_laugh_male2, sizeof(snd_laugh_male2));
     snd_laugh.emplace_back(snd_laugh_male3, sizeof(snd_laugh_male3));
@@ -58,11 +59,11 @@ void AudioData::play_steps() const {
 }
 
 void AudioData::play_drag() const {
-    return snd_drag.play(0);
+    return drag_chunk.play(0);
 }
 
 void AudioData::play_drop() const {
-    return snd_drop.play(0);
+    return drop_chunk.play(0);
 }
 
 }

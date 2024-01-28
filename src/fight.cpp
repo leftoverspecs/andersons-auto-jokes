@@ -4,6 +4,7 @@
 #include "speech.h"
 
 #include <arena.png.h>
+#include <iostream>
 
 namespace game {
 
@@ -34,6 +35,7 @@ void Fight::startup(const std::vector<const common::Stats *> &team1_stats,
         if (!s->is_empty()) {
             Person person{screen_height, family_renderer, font, box_renderer, textboxes, speech, audio_data, s};
             person.stand(x, 150.0f, true);
+            person.set_battling(true);
             x += 70.0f;
             team1.push_back(person);
         }
@@ -45,6 +47,7 @@ void Fight::startup(const std::vector<const common::Stats *> &team1_stats,
         if (!s.is_empty()) {
             Person person{screen_height, family_renderer, font, box_renderer, textboxes, speech, audio_data, &s};
             person.stand(x, 150.0f, false);
+            person.set_battling(true);
             x -= 70.0f;
             team2.push_back(person);
         }
@@ -85,21 +88,21 @@ void Fight::update(float delta_time) {
                 state = State::BOTH_PREPARED;
             }
         } else if (state == State::BOTH_PREPARED) {
-            timer = 1000.0f;
+            timer = 100.0f;
             state = State::STARING;
         } else if (state == State::STARING) {
             if (timer < 1.0f) {
                 state = State::FIRST_TALKING;
                 person1.talk();
                 person2.hear();
-                timer = 4000.0f;
+                timer = 2000.0f;
             }
         } else if (state == State::FIRST_TALKING) {
             if (timer < 1.0f) {
                 state = State::SECOND_TALKING;
                 person1.hear();
                 person2.talk();
-                timer = 4000.0f;
+                timer = 2000.0f;
             }
         } else if (state == State::SECOND_TALKING) {
             if (timer < 1.0f) {
@@ -120,20 +123,33 @@ void Fight::update(float delta_time) {
         } else if (state == State::REACTION) {
             if (person1.defeated()) {
                 person1.fly_away();
-                ++current_person1;
+                current_person1 = -1;
+                for (int i = 0; i < team1.size(); ++i) {
+                    if (!team1[team1.size() - i - 1].defeated()) {
+                        current_person1 = i;
+                        break;
+                    }
+                }
             }
             if (person2.defeated()) {
                 person2.fly_away();
-                ++current_person2;
+                current_person2 = -1;
+                for (int i = 0; i < team2.size(); ++i) {
+                    if (!team2[team2.size() - i - 1].defeated()) {
+                        current_person2 = i;
+                        break;
+                    }
+                }
             }
-            if (current_person1 < team1.size() && current_person2 < team2.size()) {
+            std::cout << "current_person1 = " << current_person1 << ", current_person2 = " << current_person2 << '\n';
+            if (current_person1 != -1 && current_person2 != -1) {
                 state = State::PREPARE;
             } else {
                 state = State::FADE_OUT;
             }
         }
     } else if (state == State::FADE_OUT) {
-        alpha -= delta_time * 0.001f;
+        alpha -= delta_time * 0.0003f;
         if (alpha < 0.001f) {
             alpha = 0.0f;
             exit();

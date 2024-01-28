@@ -10,8 +10,6 @@
 #include <spriterenderer.h>
 #include <textboxrenderer.h>
 
-#include <set>
-
 namespace engine {
 
 class Font;
@@ -31,7 +29,7 @@ public:
          engine::SpriteMap &family);
 
     void startup(const std::vector<const common::Stats *> &old_team,
-                 const std::set<const common::Stats *> &new_available);
+                 const std::vector<const common::Stats *> &new_available);
 
     [[nodiscard]] std::vector<const common::Stats *> get_team() const;
 

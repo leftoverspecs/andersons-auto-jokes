@@ -40,9 +40,13 @@ public:
     [[nodiscard]]
     float get_giddy() const;
 
+    void set_giddy(float new_giddy);
+
     [[nodiscard]]
     int get_laugh_index() const;
 
+    bool operator == (const Stats &other) const;
+    bool operator != (const Stats &other) const;
 private:
     std::string description;
     int sprite_row;

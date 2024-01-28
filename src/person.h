@@ -31,6 +31,7 @@ public:
            game::AudioData &audio_data,
            const common::Stats *prototype);
 
+    void set_battling(bool value);
     void stand(float x, float y, bool looks_right_);
     void stand_still();
     void update(float delta_time);
@@ -39,7 +40,7 @@ public:
     void talk();
     void hear();
     void fighting(int own_position,
-                  const Person &opponent,
+                  Person &opponent,
                   int opponent_position,
                   std::vector<Person> &team,
                   std::vector<Person> &opponents);
@@ -79,6 +80,7 @@ private:
     game::Speech *speech;
     const AudioData *audio_data;
 
+    bool battling{false};
     State state{State::STANDING};
     float time{0};
     float current_angle{0};

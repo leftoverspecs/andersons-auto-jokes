@@ -81,7 +81,7 @@ void Shop::on_loop(float delta_time) {
 }
 
 void Shop::startup(const std::vector<const common::Stats *> &old_team,
-                   const std::set<const common::Stats *> &new_available) {
+                   const std::vector<const common::Stats *> &new_available) {
     team.clear();
     team.reserve(old_team.size());
     float x = 40.0f;
@@ -166,6 +166,17 @@ void Shop::on_mouse_button_up(int x, int y) {
         dragging = nullptr;
         dragging_source = nullptr;
         state = State::SHOPPING;
+    } else if (x >= 710 && y >= 440 && x <= 790 && y <= 525) {
+        bool empty_slot = false;
+        for (const auto &p : team) {
+            if (p.get_stats_prototype()->is_empty()) {
+                empty_slot = true;
+                break;
+            }
+        }
+        if (!empty_slot) {
+            state = State::FADE_OUT;
+        }
     }
 }
 

@@ -2,6 +2,7 @@
 
 #include "audio_data.h"
 #include "speech.h"
+#include "family.h"
 
 #include <boxrenderer.h>
 #include <font.h>
@@ -53,14 +54,15 @@ void Person::update(float delta_time) {
     } else if (current_y > destination_y) {
         current_y -= speed * delta_time;
     }
-    if (state == State::FIGHTING) {
+    if (battling) {
         if (current_capacity > destination_capacity) {
             current_capacity -= CAPACITY_CHANGE * delta_time;
         }
         if (current_capacity <= destination_capacity) {
             current_capacity = destination_capacity;
             if (current_capacity <= 0.0f) {
-                state = State::LAUGHING;
+                fly_away();
+                //state = State::LAUGHING;
             }
         }
     }
@@ -157,7 +159,7 @@ bool Person::arrived() const {
 
 void Person::fly_away() {
     if (audio_data != nullptr) {
-        audio_data->play_laugh(current_stats.get_laugh_index());
+        //audio_data->play_laugh(current_stats.get_laugh_index());
     }
     state = State::LAUGHING;
     destination_y = 1000.0f;
@@ -168,12 +170,50 @@ void Person::talk() {
 }
 
 void Person::fighting(int own_position,
-                      const Person &opponent,
+                      Person &opponent,
                       int opponent_position,
                       std::vector<Person> &team,
                       std::vector<Person> &opponents) {
     state = State::FIGHTING;
-    destination_capacity -= opponent.current_stats.get_funny() * current_stats.get_giddy();
+    const bool dad_sister_brother_nerf = (*this->prototype == SISTER || *this->prototype == BROTHER)
+            && *opponent.prototype == DAD;
+    destination_capacity -= (dad_sister_brother_nerf ? 0.5f : 1.0f) * opponent.current_stats.get_funny() * current_stats.get_giddy();
+    if (*this->prototype == GRANDPA) {
+        for (auto &p : team) {
+            if (&p != this) {
+                p.destination_capacity -= 0.5f * current_stats.get_funny() * p.current_stats.get_giddy();
+            }
+        }
+    } else if (*this->prototype == CHILD) {
+        for (auto &p : opponents) {
+            if (*p.prototype != SISTER && *p.prototype != BROTHER) {
+                p.destination_capacity -= 2.0f * current_stats.get_funny() * p.current_stats.get_giddy();
+            }
+        }
+    } else if (*this->prototype == MUM) {
+        for (auto &p : team) {
+            if (&p != this) {
+                p.current_stats.set_giddy(std::max(p.current_stats.get_giddy() - 0.5f, 0.5f));
+            }
+        }
+    } else if (*this->prototype == DAD) {
+        if (*opponent.prototype == DAD) {
+            destination_capacity = 0.0f;
+            opponent.destination_capacity = 0.0f;
+        }
+        for (auto &p : opponents) {
+            if (&p != &opponent && *p.prototype == DAD) {
+                p.destination_capacity -= 0.1f * current_stats.get_funny() * p.current_stats.get_giddy();
+            }
+        }
+    } else if (*this->prototype == UNCLE) {
+        if (*opponent.prototype == SISTER || *opponent.prototype == BROTHER) {
+            opponent.destination_capacity -= 0.25f * current_stats.get_funny() * opponent.current_stats.get_giddy();
+        }
+    }
+    if (own_position < team.size() - 1 && *team[team.size() - own_position - 2].prototype == GRANDMA && !team[team.size() - own_position - 2].defeated()) {
+        destination_capacity += 1.0;
+    }
 }
 
 bool Person::fought() const {
@@ -181,7 +221,7 @@ bool Person::fought() const {
 }
 
 bool Person::defeated() const {
-    return current_capacity <= 0.0f;
+    return destination_capacity <= 0.0f;
 }
 
 void Person::hear() {
@@ -201,6 +241,9 @@ void Person::drop(const common::Stats *new_prototype) {
 }
 void Person::stand_still() {
     state = State::STANDING;
+}
+void Person::set_battling(bool value) {
+    battling = value;
 }
 
 }

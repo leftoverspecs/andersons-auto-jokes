@@ -45,4 +45,16 @@ int Stats::get_laugh_index() const {
     return laugh_index;
 }
 
+bool Stats::operator==(const Stats &other) const {
+    return description == other.description;
+}
+
+bool Stats::operator!=(const Stats &other) const {
+    return description != other.description;
+}
+
+void Stats::set_giddy(float new_giddy) {
+    giddy = new_giddy;
+}
+
 } // namespace common
