@@ -20,12 +20,13 @@
 #include "client.h"
 #include "lobby.h"
 #include "result.h"
+#include "speech.h"
 
+#include <boxyfont.h>
+#include <boxyfont.png.h>
 #include <family.png.h>
 #include <frame.png.h>
 #include <lobby.mp3.h>
-#include <boxyfont.h>
-#include <boxyfont.png.h>
 
 #ifdef _WIN32
 extern "C" {
@@ -85,6 +86,7 @@ int main() {
     }
 
     engine::Font font(WIDTH, HEIGHT, boxyfont, sizeof(boxyfont), assets::boxyfont_widths);
+    game::Speech speech(WIDTH, HEIGHT);
     engine::SpriteMap family_spritemap{family, sizeof(family), 8, 9};
     game::Background frame_renderer{WIDTH, HEIGHT, frame, sizeof(frame)};
 
@@ -99,8 +101,8 @@ int main() {
     std::vector<const common::Stats *> available{&dad, &mum};
     std::vector<const common::Stats *> team1{&empty};
 
-    game::Shop shop(window, WIDTH, HEIGHT, font, audio_data, family_spritemap);
-    game::Fight fight(window, WIDTH, HEIGHT, font, audio_data, family_spritemap);
+    game::Shop shop(window, WIDTH, HEIGHT, font, speech, audio_data, family_spritemap);
+    game::Fight fight(window, WIDTH, HEIGHT, font, speech, audio_data, family_spritemap);
     game::Result result(HEIGHT, window, frame_renderer, font);
     int losses = 0;
     while (true) {

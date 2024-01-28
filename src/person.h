@@ -18,6 +18,7 @@ class TextBoxRenderer;
 namespace game {
 
 class AudioData;
+class Speech;
 
 class Person {
 public:
@@ -26,6 +27,7 @@ public:
            engine::Font &font,
            engine::BoxRenderer &box,
            engine::TextBoxRenderer &textboxes,
+           game::Speech &speech,
            game::AudioData &audio_data,
            const common::Stats *prototype);
 
@@ -74,6 +76,7 @@ private:
     engine::Font *font;
     engine::BoxRenderer *box;
     engine::TextBoxRenderer *textboxes;
+    game::Speech *speech;
     const AudioData *audio_data;
 
     State state{State::STANDING};

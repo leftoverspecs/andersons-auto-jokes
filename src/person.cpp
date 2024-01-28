@@ -1,6 +1,7 @@
 #include "person.h"
 
 #include "audio_data.h"
+#include "speech.h"
 
 #include <boxrenderer.h>
 #include <font.h>
@@ -24,10 +25,12 @@ Person::Person(int screen_height, engine::SpriteRenderer &renderer,
                engine::Font &font,
                engine::BoxRenderer &box,
                engine::TextBoxRenderer &textboxes,
+               game::Speech &speech,
                game::AudioData &audio_data,
                const common::Stats *prototype)
     : screen_height{screen_height},
       renderer{&renderer}, font{&font}, box{&box}, textboxes{&textboxes},
+      speech(&speech),
       audio_data{&audio_data},
       state{State::STANDING},
       current_capacity{prototype->get_capacity()}, destination_capacity{prototype->get_capacity()},
@@ -111,6 +114,11 @@ void Person::queue(bool silent) {
         model = glm::scale(model, glm::vec3(-128.0f, 256.0f, 1.0f));
     }
     renderer->queue(model, glm::vec4(1.0f + inside_extra, 1.0f + inside_extra, 1.0f + inside_extra, 1.0f), current_sprite_column, current_stats.get_sprite_row());
+
+    if (state == State::TALKING) {
+        const int current_speech = static_cast<int>(time / 500.0f) % 4;
+        speech->queue(current_x + (looks_right ? -256.0f : +352.0f), current_y + 180.0f, !looks_right, current_speech);
+    }
 
     if (!current_stats.is_empty() && state != State::LAUGHING) {
         model = glm::mat4(1.0f);

@@ -1,6 +1,7 @@
 #include "fight.h"
 
 #include <font.h>
+#include "speech.h"
 
 #include <arena.png.h>
 
@@ -9,11 +10,13 @@ namespace game {
 Fight::Fight(SDL_Window *window,
              int screen_width, int screen_height,
              engine::Font &font,
+             Speech &speech,
              game::AudioData &audio_data,
              engine::SpriteMap &family)
     : Scene(screen_height, window),
       screen_height{screen_height},
       font{font},
+      speech{speech},
       audio_data{audio_data},
       family{family},
       destination(screen_width, screen_height),
@@ -29,7 +32,7 @@ void Fight::startup(const std::vector<const common::Stats *> &team1_stats,
     float x = 20.0f;
     for (const auto s: team1_stats) {
         if (!s->is_empty()) {
-            Person person{screen_height, family_renderer, font, box_renderer, textboxes, audio_data, s};
+            Person person{screen_height, family_renderer, font, box_renderer, textboxes, speech, audio_data, s};
             person.stand(x, 150.0f, true);
             x += 70.0f;
             team1.push_back(person);
@@ -40,7 +43,7 @@ void Fight::startup(const std::vector<const common::Stats *> &team1_stats,
     team2.reserve(team2_stats.size());
     for (const auto &s: team2_stats) {
         if (!s.is_empty()) {
-            Person person{screen_height, family_renderer, font, box_renderer, textboxes, audio_data, &s};
+            Person person{screen_height, family_renderer, font, box_renderer, textboxes, speech, audio_data, &s};
             person.stand(x, 150.0f, false);
             x -= 70.0f;
             team2.push_back(person);
@@ -89,14 +92,14 @@ void Fight::update(float delta_time) {
                 state = State::FIRST_TALKING;
                 person1.talk();
                 person2.hear();
-                timer = 100.0f;//4000.0f;
+                timer = 4000.0f;
             }
         } else if (state == State::FIRST_TALKING) {
             if (timer < 1.0f) {
                 state = State::SECOND_TALKING;
                 person1.hear();
                 person2.talk();
-                timer = 100.0f;//4000.0f;
+                timer = 4000.0f;
             }
         } else if (state == State::SECOND_TALKING) {
             if (timer < 1.0f) {
@@ -164,6 +167,7 @@ void Fight::on_loop(float delta_time) {
 
         family_renderer.clear();
         font.clear();
+        speech.clear();
         box_renderer.clear();
         update(delta_time);
         for (auto &person: team1) {
@@ -178,6 +182,7 @@ void Fight::on_loop(float delta_time) {
         family_renderer.draw();
         box_renderer.draw();
         font.draw();
+        speech.draw();
     }
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);

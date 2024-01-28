@@ -1,6 +1,7 @@
 #include "shop.h"
 
 #include <font.h>
+#include "speech.h"
 
 #include <iostream>
 #include <shop.png.h>
@@ -10,11 +11,13 @@ namespace game {
 Shop::Shop(SDL_Window *window,
            int screen_width, int screen_height,
            engine::Font &font,
+           Speech &speech,
            game::AudioData &audio_data,
            engine::SpriteMap &family)
     : Scene(screen_height, window),
       screen_height{screen_height},
       font{font},
+      speech{speech},
       audio_data{audio_data},
       destination(screen_width, screen_height),
       family_renderer(family, screen_width, screen_height),
@@ -55,6 +58,7 @@ void Shop::on_loop(float delta_time) {
 
         family_renderer.clear();
         font.clear();
+        speech.clear();
         box_renderer.clear();
         update(delta_time);
         for (auto &person : team) {
@@ -69,6 +73,7 @@ void Shop::on_loop(float delta_time) {
         family_renderer.draw();
         box_renderer.draw();
         font.draw();
+        speech.draw();
     }
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -81,7 +86,7 @@ void Shop::startup(const std::vector<const common::Stats *> &old_team,
     team.reserve(old_team.size());
     float x = 40.0f;
     for (const auto s : old_team) {
-        Person person{screen_height, family_renderer, font, box_renderer, textboxes, audio_data, s};
+        Person person{screen_height, family_renderer, font, box_renderer, textboxes, speech, audio_data, s};
         person.stand(x, 50.0f, true);
         x += 180.0f;
         team.push_back(person);
@@ -91,7 +96,7 @@ void Shop::startup(const std::vector<const common::Stats *> &old_team,
     available.reserve(new_available.size());
     x = 25.0f;
     for (const auto s : new_available) {
-        Person person{screen_height, family_renderer, font, box_renderer, textboxes, audio_data, s};
+        Person person{screen_height, family_renderer, font, box_renderer, textboxes, speech, audio_data, s};
         person.stand(x, 320.0f, true);
         x += 177.0f;
         available.push_back(person);

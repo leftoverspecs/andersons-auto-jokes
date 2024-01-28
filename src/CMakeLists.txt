@@ -16,5 +16,7 @@ add_executable(andersonsautojokes WIN32
         lobby.h
         result.cpp
         result.h
+        speech.cpp
+        speech.h
 )
 target_link_libraries(andersonsautojokes PRIVATE game_assets boxyfont engine common)

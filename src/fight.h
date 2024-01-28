@@ -31,6 +31,7 @@ public:
     Fight(SDL_Window *window,
           int screen_width, int screen_height,
           engine::Font &font,
+          Speech &speech,
           AudioData &audio_data,
           engine::SpriteMap &family);
 
@@ -59,6 +60,7 @@ private:
 
     int screen_height;
     engine::Font &font;
+    Speech &speech;
     AudioData &audio_data;
     engine::SpriteMap &family;
 
