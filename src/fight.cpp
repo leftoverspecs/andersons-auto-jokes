@@ -9,10 +9,12 @@ namespace game {
 Fight::Fight(SDL_Window *window,
              int screen_width, int screen_height,
              engine::Font &font,
+             game::AudioData &audio_data,
              engine::SpriteMap &family)
     : Scene(screen_height, window),
       screen_height{screen_height},
       font{font},
+      audio_data{audio_data},
       family{family},
       destination(screen_width, screen_height),
       family_renderer(family, screen_width, screen_height),
@@ -27,7 +29,7 @@ void Fight::startup(const std::vector<const common::Stats *> &team1_stats,
     float x = 20.0f;
     for (const auto s: team1_stats) {
         if (!s->is_empty()) {
-            Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
+            Person person{screen_height, family_renderer, font, box_renderer, textboxes, audio_data, s};
             person.stand(x, 150.0f, true);
             x += 70.0f;
             team1.push_back(person);
@@ -38,7 +40,7 @@ void Fight::startup(const std::vector<const common::Stats *> &team1_stats,
     team2.reserve(team2_stats.size());
     for (const auto &s: team2_stats) {
         if (!s.is_empty()) {
-            Person person{screen_height, family_renderer, font, box_renderer, textboxes, &s};
+            Person person{screen_height, family_renderer, font, box_renderer, textboxes, audio_data, &s};
             person.stand(x, 150.0f, false);
             x -= 70.0f;
             team2.push_back(person);

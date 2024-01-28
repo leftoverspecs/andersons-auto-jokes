@@ -22,9 +22,10 @@ namespace game {
 class Shop : public Scene {
 public:
     Shop(SDL_Window *window,
-          int screen_width, int screen_height,
-          engine::Font &font,
-          engine::SpriteMap &family);
+         int screen_width, int screen_height,
+         engine::Font &font,
+         game::AudioData &audio_data,
+         engine::SpriteMap &family);
 
     void startup(const std::vector<const common::Stats *> &old_team,
                  const std::vector<const common::Stats *> &new_available);
@@ -42,6 +43,7 @@ private:
 
     int screen_height;
     engine::Font &font;
+    AudioData &audio_data;
 
     engine::Destination destination;
     engine::SpriteRenderer family_renderer;

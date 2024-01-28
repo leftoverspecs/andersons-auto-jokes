@@ -26,4 +26,12 @@ AudioData::AudioData()
     snd_laugh.emplace_back(snd_laugh_female3, sizeof(snd_laugh_female3));
 }
 
+void AudioData::play_laugh(int index) const {
+    return snd_laugh.at(index).play(0);
+}
+
+void AudioData::play_steps() const {
+    return snd_steps.play(0);
+}
+
 }

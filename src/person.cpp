@@ -1,5 +1,7 @@
 #include "person.h"
 
+#include "audio_data.h"
+
 #include <boxrenderer.h>
 #include <font.h>
 #include <spriterenderer.h>
@@ -22,9 +24,11 @@ Person::Person(int screen_height, engine::SpriteRenderer &renderer,
                engine::Font &font,
                engine::BoxRenderer &box,
                engine::TextBoxRenderer &textboxes,
+               game::AudioData &audio_data,
                const common::Stats *prototype)
     : screen_height{screen_height},
       renderer{&renderer}, font{&font}, box{&box}, textboxes{&textboxes},
+      audio_data{&audio_data},
       state{State::STANDING},
       current_capacity{prototype->get_capacity()}, destination_capacity{prototype->get_capacity()},
       prototype{prototype}, current_stats{*prototype} {}
@@ -70,6 +74,7 @@ void Person::stand(float x, float y, bool looks_right_) {
 }
 
 void Person::walk_to(float x, float y) {
+    audio_data->play_steps();
     state = State::WALKING;
     destination_x = x;
     destination_y = y;
@@ -134,6 +139,9 @@ bool Person::arrived() const {
 }
 
 void Person::fly_away() {
+    if (audio_data != nullptr) {
+        audio_data->play_laugh(current_stats.get_laugh_index());
+    }
     state = State::LAUGHING;
     destination_y = 1000.0f;
 }

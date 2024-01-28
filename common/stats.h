@@ -12,7 +12,9 @@ namespace common {
 class Stats {
 public:
     Stats();
-    Stats(std::string description, int sprite_row, float capacity, float funny, float giddy);
+    Stats(std::string description, int sprite_row,
+          float capacity, float funny, float giddy,
+          int laugh_index);
 
     template<typename It>
     Stats(It &pos, It end);
@@ -38,12 +40,16 @@ public:
     [[nodiscard]]
     float get_giddy() const;
 
+    [[nodiscard]]
+    int get_laugh_index() const;
+
 private:
     std::string description;
     int sprite_row;
     float capacity{};
     float funny{};
     float giddy{};
+    int laugh_index{};
 };
 
 template<typename It>
@@ -52,7 +58,8 @@ Stats::Stats(It &pos, It end)
       sprite_row{read_uint8(pos, end)},
       capacity{read_float(pos, end)},
       funny{read_float(pos, end)},
-      giddy{read_float(pos, end)}
+      giddy{read_float(pos, end)},
+      laugh_index{read_uint8(pos, end)}
 {}
 
 template<typename It>
@@ -73,6 +80,7 @@ void Stats::write(It &pos) const {
     write_float(pos, capacity);
     write_float(pos, funny);
     write_float(pos, giddy);
+    write_uint8(pos, laugh_index);
 }
 
 template<typename It>

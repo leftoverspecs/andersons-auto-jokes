@@ -17,6 +17,8 @@ class TextBoxRenderer;
 
 namespace game {
 
+class AudioData;
+
 class Person {
 public:
     Person(int screen_height,
@@ -24,6 +26,7 @@ public:
            engine::Font &font,
            engine::BoxRenderer &box,
            engine::TextBoxRenderer &textboxes,
+           game::AudioData &audio_data,
            const common::Stats *prototype);
 
     void stand(float x, float y, bool looks_right_);
@@ -71,6 +74,7 @@ private:
     engine::Font *font;
     engine::BoxRenderer *box;
     engine::TextBoxRenderer *textboxes;
+    const AudioData *audio_data;
 
     State state{State::STANDING};
     float time{0};

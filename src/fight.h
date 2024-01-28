@@ -31,6 +31,7 @@ public:
     Fight(SDL_Window *window,
           int screen_width, int screen_height,
           engine::Font &font,
+          AudioData &audio_data,
           engine::SpriteMap &family);
 
     void startup(const std::vector<const common::Stats *> &team1_stats,
@@ -58,6 +59,7 @@ private:
 
     int screen_height;
     engine::Font &font;
+    AudioData &audio_data;
     engine::SpriteMap &family;
 
     engine::Destination destination;

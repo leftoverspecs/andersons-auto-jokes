@@ -74,7 +74,7 @@ int main() {
     glViewport(0, 0, WIDTH, HEIGHT);
 
     engine::Audio audio(44100, MIX_DEFAULT_FORMAT, 2, 64);
-    game::AudioData audioData;
+    game::AudioData audio_data;
 
     common::Client client("localhost", 10000);
     const common::Message hello_answer = client.send(common::Message{common::Message::type::CLIENT_HELLO, "andersons"});
@@ -87,18 +87,18 @@ int main() {
     game::Background frame_renderer{WIDTH, HEIGHT, frame, sizeof(frame)};
 
     const common::Stats empty;
-    const common::Stats dad{"Dad", 1, 10.0, 5.0, 1.0};
-    const common::Stats mum{"Mum", 2, 10.0, 1.0, 0.5};
-    const common::Stats big_sister{"Big Sister", 3, 10.0, 1.0, 1.0};
-    const common::Stats little_brother{"Little Brother", 4, 10.0, 1.0, 5.0};
-    const common::Stats uncle{"Uncle", 5, 10.0, 5.0, 3.0};
+    const common::Stats dad{"Dad", 1, 10.0, 5.0, 1.0, 0};
+    const common::Stats mum{"Mum", 2, 10.0, 1.0, 0.5, 1};
+    const common::Stats big_sister{"Big Sister", 3, 10.0, 1.0, 1.0, 2};
+    const common::Stats little_brother{"Little Brother", 4, 10.0, 1.0, 5.0, 3};
+    const common::Stats uncle{"Uncle", 5, 10.0, 5.0, 3.0, 4};
 
     const std::vector<const common::Stats *> all = {&empty, &dad, &mum, &big_sister, &little_brother, &uncle};
     std::vector<const common::Stats *> available{&dad, &mum};
     std::vector<const common::Stats *> team1{&empty};
 
-    game::Shop shop(window, WIDTH, HEIGHT, font, family_spritemap);
-    game::Fight fight(window, WIDTH, HEIGHT, font, family_spritemap);
+    game::Shop shop(window, WIDTH, HEIGHT, font, audio_data, family_spritemap);
+    game::Fight fight(window, WIDTH, HEIGHT, font, audio_data, family_spritemap);
     game::Result result(HEIGHT, window, frame_renderer, font);
     int losses = 0;
     while (true) {

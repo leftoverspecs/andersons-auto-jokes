@@ -9,8 +9,8 @@ class AudioData {
 public:
     AudioData();
 
-    [[nodiscard]] const engine::Chunk &geg_snd_laugh(int index) const { return snd_laugh.at(index); }
-    [[nodiscard]] const engine::Chunk &get_steps() const { return snd_steps; }
+    void play_laugh(int index) const;
+    void play_steps() const;
 
 private:
     std::vector<engine::Chunk> snd_laugh;
