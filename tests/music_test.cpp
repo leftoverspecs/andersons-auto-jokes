@@ -50,10 +50,10 @@ int main(int argc, char *argv[]) {
                     break;
                 case SDLK_SPACE:
                     if (!playing) {
-                        music.play(-1);
+                        music.fade_in(-1, 1000);
                         playing = true;
                     } else {
-                        music.halt();
+                        music.fade_out(1000);
                         playing = false;
                     }
                     break;

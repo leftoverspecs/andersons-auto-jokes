@@ -16,14 +16,14 @@ Music::~Music() {
     Mix_FreeMusic(music);
 }
 
-void Music::play(int loops) const {
-    if (Mix_PlayMusic(music, loops) != 0) {
+void Music::fade_in(int loops, int ms) const {
+    if (Mix_FadeInMusic(music, loops, ms) != 0) {
         throw std::runtime_error(SDL_GetError());
     }
 }
 
-void Music::halt() const {
-    Mix_HaltMusic();
+void Music::fade_out(int ms) const {
+    Mix_FadeOutMusic(ms);
 }
 
 }

@@ -100,6 +100,7 @@ convert_to_header(arena.png arena)
 convert_to_header(family.png family)
 convert_to_header(shop.png shop)
 convert_to_header(frame.png frame)
+convert_to_header(lobby.mp3 lobby)
 
 add_library(game_assets INTERFACE
         "${CMAKE_CURRENT_SOURCE_DIR}/arena.png"
@@ -110,6 +111,8 @@ add_library(game_assets INTERFACE
         "${CMAKE_CURRENT_BINARY_DIR}/shop.png.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/frame.png"
         "${CMAKE_CURRENT_BINARY_DIR}/frame.png.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/lobby.mp3"
+        "${CMAKE_CURRENT_BINARY_DIR}/lobby.mp3.h"
         "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_child1.wav"
         "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_child1.wav.h"
         "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_female1.wav"

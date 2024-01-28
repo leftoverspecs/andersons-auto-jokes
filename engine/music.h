@@ -10,9 +10,12 @@ class Music {
 public:
     Music(const unsigned char *data, std::size_t size);
     ~Music();
-    
-    void play(int loops) const;
-    void halt() const;
+
+    Music(const Music &) = delete;
+    Music &operator = (const Music &) = delete;
+
+    void fade_in(int loops, int ms) const;
+    void fade_out(int ms) const;
 private:
     Mix_Music *music;
 };

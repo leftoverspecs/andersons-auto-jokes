@@ -7,6 +7,7 @@
 #include <controller.h>
 #include <font.h>
 #include <image.h>
+#include <music.h>
 
 #include <iostream>
 #include <cstdlib>
@@ -22,7 +23,7 @@
 
 #include <family.png.h>
 #include <frame.png.h>
-
+#include <lobby.mp3.h>
 #include <boxyfont.h>
 #include <boxyfont.png.h>
 
@@ -75,6 +76,7 @@ int main() {
 
     engine::Audio audio(44100, MIX_DEFAULT_FORMAT, 2, 64);
     game::AudioData audio_data;
+    engine::Music lobby_music{lobby, sizeof(lobby)};
 
     common::Client client("localhost", 10000);
     const common::Message hello_answer = client.send(common::Message{common::Message::type::CLIENT_HELLO, "andersons"});
@@ -108,10 +110,12 @@ int main() {
         }
         team1 = shop.get_team();
         game::Lobby lobby(HEIGHT, window, frame_renderer, font, client);
+        lobby_music.fade_in(-1, 1000);
         lobby.startup(team1);
         if (!lobby.run()) {
             break;
         }
+        lobby_music.fade_out(1000);
         fight.startup(team1, lobby.get_opponent_stats());
         if (!fight.run()) {
             break;
