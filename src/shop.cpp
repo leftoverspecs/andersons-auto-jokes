@@ -63,7 +63,7 @@ void Shop::on_loop(float delta_time) {
             person.update(delta_time);
             person.queue(false);
         }
-        background.draw();
+        background.draw(1.0f);
         family_renderer.draw();
         box_renderer.draw();
         font.draw();

@@ -11,13 +11,13 @@ Background::Background(float width, float height, const unsigned char *image, st
     renderer(sprite, width, height)
 { }
 
-void Background::draw() {
+void Background::draw(float alpha) {
     renderer.clear();
 
     glm::mat4 model(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
     model = glm::scale(model, glm::vec3(width, height, 1.0f));
-    renderer.queue(model, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 0, 0);
+    renderer.queue(model, glm::vec4(1.0f, 1.0f, 1.0f, alpha), 0, 0);
     renderer.draw();
 }
 

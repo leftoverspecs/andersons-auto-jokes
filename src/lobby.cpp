@@ -1,5 +1,7 @@
 #include "lobby.h"
 
+#include "background.h"
+
 #include <client.h>
 #include <font.h>
 
@@ -7,8 +9,9 @@
 
 namespace game {
 
-Lobby::Lobby(int height, SDL_Window *window, engine::Font &font, common::Client &client)
+Lobby::Lobby(int height, SDL_Window *window, Background &background, engine::Font &font, common::Client &client)
     : Scene(height, window),
+      background{background},
       font{font},
       client{client} {}
 
@@ -31,8 +34,8 @@ void Lobby::on_loop(float delta_time) {
     glClear(GL_COLOR_BUFFER_BIT);
     font.clear();
     glm::mat4 model(1.0f);
-    model = glm::translate(model, glm::vec3(10.0f, 300.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(40.0f, 40.0f, 1.0f));
+    model = glm::translate(model, glm::vec3(125.0f, 300.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(35.0f, 50.0f, 1.0f));
     if (state == State::FADE_IN) {
         alpha += delta_time * 0.001f;
         if (alpha > 0.9f) {
@@ -68,6 +71,7 @@ void Lobby::on_loop(float delta_time) {
         }
     }
     font.write(model, glm::vec4(1.0f, 1.0f, 1.0f, alpha), "Waiting for opponent...");
+    background.draw(alpha);
     font.draw();
 }
 

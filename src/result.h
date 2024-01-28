@@ -12,9 +12,12 @@ class Font;
 
 namespace game {
 
+class Background;
+
 class Result : public Scene {
 public:
-    Result(int height, SDL_Window *window, engine::Font &font);
+    Result(int height, SDL_Window *window,
+           game::Background &background, engine::Font &font);
 
     void startup(Fight::Winner winner, int losses);
 
@@ -24,6 +27,7 @@ private:
         PRESENTING,
         FADE_OUT,
     };
+    game::Background &background;
     engine::Font &font;
 
     State state;

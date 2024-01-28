@@ -21,9 +21,11 @@ class Client;
 
 namespace game {
 
+class Background;
+
 class Lobby : public Scene {
 public:
-    Lobby(int height, SDL_Window *window, engine::Font &font, common::Client &client);
+    Lobby(int height, SDL_Window *window, Background &background, engine::Font &font, common::Client &client);
 
     void startup(const std::vector<const common::Stats *> &player_stats);
     [[nodiscard]] const std::vector<common::Stats> &get_opponent_stats() const { return stats; }
@@ -34,6 +36,7 @@ private:
         FADE_OUT,
         FINISHED,
     };
+    game::Background &background;
     engine::Font &font;
     common::Client &client;
     State state{State::FADE_IN};

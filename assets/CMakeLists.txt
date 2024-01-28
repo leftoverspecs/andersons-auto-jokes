@@ -99,6 +99,7 @@ target_include_directories(boxyfont INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
 convert_to_header(arena.png arena)
 convert_to_header(family.png family)
 convert_to_header(shop.png shop)
+convert_to_header(frame.png frame)
 
 add_library(game_assets INTERFACE
         "${CMAKE_CURRENT_SOURCE_DIR}/arena.png"
@@ -107,6 +108,8 @@ add_library(game_assets INTERFACE
         "${CMAKE_CURRENT_BINARY_DIR}/family.png.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/shop.png"
         "${CMAKE_CURRENT_BINARY_DIR}/shop.png.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/frame.png"
+        "${CMAKE_CURRENT_BINARY_DIR}/frame.png.h"
         "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_child1.wav"
         "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_child1.wav.h"
         "${CMAKE_CURRENT_BINARY_DIR}/snd_laugh_female1.wav"

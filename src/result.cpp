@@ -6,8 +6,10 @@
 
 namespace game {
 
-Result::Result(int height, SDL_Window *window, engine::Font &font)
+Result::Result(int height, SDL_Window *window,
+               game::Background &background, engine::Font &font)
     : Scene(height, window),
+      background{background},
       font(font) {}
 
 void Result::startup(Fight::Winner new_winner, int new_losses) {
@@ -50,20 +52,21 @@ void Result::on_loop(float delta_time) {
         message = "Loose!";
         break;
     }
-    model = glm::scale(model, glm::vec3(90.0f, 90.0f, 1.0f));
+    model = glm::scale(model, glm::vec3(90.0f, 120.0f, 1.0f));
     font.write(model, glm::vec4(1.0f, 1.0f, 1.0f, alpha), message.c_str());
 
     model = glm::mat4(1.0f);
     if (losses == 1) {
         model = glm::translate(model, glm::vec3(200.0f, 200.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(40.0f, 40.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(40.0f, 50.0f, 1.0f));
         message = "You lost once.";
     } else {
         model = glm::translate(model, glm::vec3(150.0f, 200.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(40.0f, 40.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(40.0f, 50.0f, 1.0f));
         message = std::string("You lost ") + std::to_string(losses) + " times.";
     }
     font.write(model, glm::vec4(1.0f, 1.0f, 1.0f, alpha), message.c_str());
+    background.draw(alpha);
     font.draw();
 }
 

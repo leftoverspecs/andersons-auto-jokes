@@ -21,6 +21,7 @@
 #include "result.h"
 
 #include <family.png.h>
+#include <frame.png.h>
 
 #include <boxyfont.h>
 #include <boxyfont.png.h>
@@ -83,6 +84,7 @@ int main() {
 
     engine::Font font(WIDTH, HEIGHT, boxyfont, sizeof(boxyfont), assets::boxyfont_widths);
     engine::SpriteMap family_spritemap{family, sizeof(family), 8, 9};
+    game::Background frame_renderer{WIDTH, HEIGHT, frame, sizeof(frame)};
 
     const common::Stats empty;
     const common::Stats dad{"Dad", 1, 10.0, 5.0, 1.0};
@@ -97,7 +99,7 @@ int main() {
 
     game::Shop shop(window, WIDTH, HEIGHT, font, family_spritemap);
     game::Fight fight(window, WIDTH, HEIGHT, font, family_spritemap);
-    game::Result result(HEIGHT, window, font);
+    game::Result result(HEIGHT, window, frame_renderer, font);
     int losses = 0;
     while (true) {
         shop.startup(team1, available);
@@ -105,7 +107,7 @@ int main() {
             break;
         }
         team1 = shop.get_team();
-        game::Lobby lobby(HEIGHT, window, font, client);
+        game::Lobby lobby(HEIGHT, window, frame_renderer, font, client);
         lobby.startup(team1);
         if (!lobby.run()) {
             break;

@@ -9,7 +9,7 @@ class Background {
 public:
     Background(float width, float height, const unsigned char *image, std::size_t image_size);
 
-    void draw();
+    void draw(float alpha);
 private:
     float width;
     float height;
