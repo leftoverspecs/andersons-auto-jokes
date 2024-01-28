@@ -40,7 +40,7 @@ void Shop::update(float delta_time) {
             int y;
             SDL_GetMouseState(&x, &y);
             y = screen_height - y;
-            dragging->stand(x - 32.0f, y - 32.0f, true);
+            dragging->stand(x - 64.0f, y - 128.0f, true);
         }
     }
 }
@@ -62,10 +62,6 @@ void Shop::on_loop(float delta_time) {
         for (auto &person : available) {
             person.update(delta_time);
             person.queue(false);
-        }
-        if (dragging) {
-            dragging->update(delta_time);
-            dragging->queue(true);
         }
         background.draw();
         family_renderer.draw();
@@ -113,7 +109,12 @@ std::vector<const common::Stats *> Shop::get_team() const {
 
 void Shop::on_key_pressed(SDL_Keycode code) {
     if (code == SDLK_RETURN) {
-        state = State::FADE_OUT;
+        for (const auto &p : team) {
+            if (!p.get_stats_prototype()->is_empty()) {
+                state = State::FADE_OUT;
+                break;
+            }
+        }
     } else if (code == SDLK_PAGEUP) {
         destination.set_gamma(destination.get_gamma() + 0.1f);
     } else if (code == SDLK_PAGEDOWN) {

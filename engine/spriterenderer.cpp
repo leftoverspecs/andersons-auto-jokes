@@ -4,8 +4,9 @@
 
 #include <stdexcept>
 
-#include <sprite.vert.h>
+#include <iostream>
 #include <sprite.frag.h>
+#include <sprite.vert.h>
 
 namespace engine {
 
@@ -81,6 +82,7 @@ void SpriteRenderer::queue(const glm::mat4 &model, const glm::vec4 &color, const
 }
 
 void SpriteRenderer::draw() const {
+    //std::cout << batch.size() << '\n';
     auto usage = shader.use();
     auto texture_binding = map.bind(GL_TEXTURE0, GL_TEXTURE_2D);
     auto binding = vao.bind();

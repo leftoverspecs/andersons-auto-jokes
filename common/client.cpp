@@ -5,11 +5,11 @@
 
 namespace common {
 
-client::exception::exception(const std::string &message)
+Client::exception::exception(const std::string &message)
     : std::runtime_error(message + ": " + SDLNet_GetError())
 {}
 
-client::client(const std::string &hostname, uint16_t port) {
+Client::Client(const std::string &hostname, uint16_t port) {
     IPaddress address;
     if (SDLNet_ResolveHost(&address, hostname.c_str(), port) == -1) {
         throw exception("Can't resolve host \"" + hostname + ':' + std::to_string(port) + '"');
@@ -20,11 +20,11 @@ client::client(const std::string &hostname, uint16_t port) {
     }
 }
 
-client::~client() {
+Client::~Client() {
     SDLNet_TCP_Close(socket);
 }
 
-message client::send(const message &m) const {
+Message Client::send(const Message &m) const {
     common::send(socket, m);
     return common::receive(socket);
 }

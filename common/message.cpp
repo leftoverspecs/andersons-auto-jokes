@@ -5,24 +5,23 @@
 
 namespace common {
 
-std::vector<uint8_t> message::serialize() const {
+std::vector<uint8_t> Message::serialize() const {
     std::vector<uint8_t> buffer;
-    buffer.reserve(sizeof(uint8_t) + sizeof(uint32_t) + content.size());
-    auto pos = std::back_inserter(buffer);
-    write_uint8(pos, static_cast<uint8_t>(t));
-    write_uint8_vector(pos, content);
+    buffer.reserve(sizeof(uint8_t) + content.size());
+    buffer.push_back(static_cast<uint8_t>(t));
+    buffer.insert(buffer.end(), content.begin(), content.end());
     return buffer;
 }
 
-message::message() : t{type::OK} {}
+Message::Message() : t{type::OK} {}
 
-message::message(std::string msg) : t{type::OK}, content{msg.begin(), msg.end()} {}
+Message::Message(std::string msg) : t{type::OK}, content{msg.begin(), msg.end()} {}
 
-message::message(message::type t) : t{t} {}
+Message::Message(Message::type t) : t{t} {}
 
-message::message(message::type t, const std::string &m) : t{t}, content{m.begin(), m.end()} {}
+Message::Message(Message::type t, const std::string &m) : t{t}, content{m.begin(), m.end()} {}
 
-message::message(message::type t, const std::vector<Stats> &stats)
+Message::Message(Message::type t, const std::vector<Stats> &stats)
     : t{t}, content{} {
     auto pos = std::back_inserter(content);
     write_stats(pos, stats);

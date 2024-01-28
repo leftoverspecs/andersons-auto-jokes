@@ -32,27 +32,30 @@ Person::Person(int screen_height, engine::SpriteRenderer &renderer,
 void Person::update(float delta_time) {
     time += delta_time;
     const float speed = (state == State::LAUGHING ? 10.0f : 1.0f) * SPEED;
-    if (std::fabs(current_x - destination_x) < 1) {
+    if (std::fabs(current_x - destination_x) < 10.0f) {
         current_x = destination_x;
     } else if (current_x < destination_x) {
         current_x += speed * delta_time;
     } else if (current_x > destination_x) {
         current_x -= speed * delta_time;
     }
-    if (std::fabs(current_y - destination_y) < 1) {
+    if (std::fabs(current_y - destination_y) < 10.0f) {
         current_y = destination_y;
     } else if (current_y < destination_y) {
         current_y += speed * delta_time;
     } else if (current_y > destination_y) {
         current_y -= speed * delta_time;
     }
-    if (std::fabs(current_capacity - destination_capacity) < 1) {
-        current_capacity = destination_capacity;
-        if (current_capacity < 1.0f) {
-            state = State::LAUGHING;
+    if (state == State::FIGHTING) {
+        if (current_capacity > destination_capacity) {
+            current_capacity -= CAPACITY_CHANGE * delta_time;
         }
-    } else {
-        current_capacity -= CAPACITY_CHANGE * delta_time;
+        if (current_capacity <= destination_capacity) {
+            current_capacity = destination_capacity;
+            if (current_capacity <= 0.0f) {
+                state = State::LAUGHING;
+            }
+        }
     }
     if (!current_stats.is_empty() && state == State::LAUGHING) {
         current_angle += 0.1f;
@@ -153,7 +156,7 @@ bool Person::fought() const {
 }
 
 bool Person::defeated() const {
-    return current_capacity < 1.0f;
+    return current_capacity <= 0.0f;
 }
 
 void Person::hear() {

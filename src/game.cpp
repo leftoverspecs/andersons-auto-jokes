@@ -16,6 +16,9 @@
 #include "shop.h"
 
 #include "audio_data.h"
+#include "client.h"
+#include "lobby.h"
+#include "result.h"
 
 #include <family.png.h>
 
@@ -72,51 +75,62 @@ int main() {
     engine::Audio audio(44100, MIX_DEFAULT_FORMAT, 2, 64);
     game::AudioData audioData;
 
+    common::Client client("localhost", 10000);
+    const common::Message hello_answer = client.send(common::Message{common::Message::type::CLIENT_HELLO, "andersons"});
+    if (hello_answer.get_type() != common::Message::type::OK) {
+        return EXIT_FAILURE;
+    }
+
     engine::Font font(WIDTH, HEIGHT, boxyfont, sizeof(boxyfont), assets::boxyfont_widths);
     engine::SpriteMap family_spritemap{family, sizeof(family), 8, 9};
 
-    common::Stats empty;
-    common::Stats dad{"Dad", 1, 10.0, 5.0, 1.0};
-    common::Stats mum{"Mum", 2, 10.0, 1.0, 0.5};
-    common::Stats big_sister{"Big Sister", 3, 10.0, 1.0, 1.0};
-    common::Stats little_brother{"Little Brother", 4, 10.0, 1.0, 5.0};
-    common::Stats uncle{"Uncle", 5, 10.0, 5.0, 3.0};
+    const common::Stats empty;
+    const common::Stats dad{"Dad", 1, 10.0, 5.0, 1.0};
+    const common::Stats mum{"Mum", 2, 10.0, 1.0, 0.5};
+    const common::Stats big_sister{"Big Sister", 3, 10.0, 1.0, 1.0};
+    const common::Stats little_brother{"Little Brother", 4, 10.0, 1.0, 5.0};
+    const common::Stats uncle{"Uncle", 5, 10.0, 5.0, 3.0};
 
-    std::vector<const common::Stats *> available{
-        &dad,
-        &mum,
-        //&big_sister,
-        &little_brother,
-        &uncle,
-    };
+    const std::vector<const common::Stats *> all = {&empty, &dad, &mum, &big_sister, &little_brother, &uncle};
+    std::vector<const common::Stats *> available{&dad, &mum};
+    std::vector<const common::Stats *> team1{&empty};
 
-    std::vector<const common::Stats *> team1{
-            &empty,
-            &empty,
-            &empty,
-            &empty,
-    };
-    std::vector<const common::Stats *> team2{
-            &dad,
-            &mum,
-            &big_sister,
-            &little_brother,
-    };
-
-    game::Fight fight(window, WIDTH, HEIGHT, font, family_spritemap);
     game::Shop shop(window, WIDTH, HEIGHT, font, family_spritemap);
+    game::Fight fight(window, WIDTH, HEIGHT, font, family_spritemap);
+    game::Result result(HEIGHT, window, font);
+    int losses = 0;
     while (true) {
         shop.startup(team1, available);
         if (!shop.run()) {
             break;
         }
         team1 = shop.get_team();
-        fight.startup(team1, team2);
+        game::Lobby lobby(HEIGHT, window, font, client);
+        lobby.startup(team1);
+        if (!lobby.run()) {
+            break;
+        }
+        fight.startup(team1, lobby.get_opponent_stats());
         if (!fight.run()) {
+            break;
+        }
+        const game::Fight::Winner winner = fight.get_result();
+        if (winner == game::Fight::Winner::TEAM2) {
+            ++losses;
+        }
+        result.startup(winner, losses);
+        if (!result.run()) {
+            break;
+        }
+        if (team1.size() + 2 < all.size()) {
+            team1.push_back(&empty);
+            available.push_back(all.at(team1.size() + 1));
+        } else {
             break;
         }
     }
 
+    client.send(common::Message{common::Message::type::CLIENT_QUIT});
     SDL_GL_DeleteContext(context);
     SDL_DestroyWindow(window);
     SDL_Quit();

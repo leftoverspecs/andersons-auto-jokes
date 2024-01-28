@@ -1,6 +1,6 @@
 add_executable(andersonsautojokes WIN32
-	audio_data.cpp
-	audio_data.h
+        audio_data.cpp
+        audio_data.h
         background.cpp
         background.h
         game.cpp
@@ -12,5 +12,9 @@ add_executable(andersonsautojokes WIN32
         scene.h
         shop.h
         shop.cpp
+        lobby.cpp
+        lobby.h
+        result.cpp
+        result.h
 )
 target_link_libraries(andersonsautojokes PRIVATE game_assets boxyfont engine common)

@@ -45,6 +45,11 @@ bool Scene::run() {
         last = next;
         on_loop(delta_time);
         SDL_GL_SwapWindow(window);
+
+        /*if (delta_time > 0) {
+            const float fps = 1000.0f / delta_time;
+            SDL_SetWindowTitle(window, std::to_string(fps).c_str());
+        }*/
     }
     return true;
 }

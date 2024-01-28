@@ -13,7 +13,7 @@
 
 namespace common {
 
-class message {
+class Message {
 public:
     enum class type : uint8_t {
         OK,
@@ -21,22 +21,22 @@ public:
         CLIENT_QUIT,
         SERVER_QUIT,
         CLIENT_HELLO,
-        BATTLE,
+        GET_OPPONENT,
         RETRY,
         OPPONENT
     };
 
-    message();
-    explicit message(std::string msg);
-    explicit message(type t);
-    message(type t, const std::string &m);
+    Message();
+    explicit Message(std::string msg);
+    explicit Message(type t);
+    Message(type t, const std::string &m);
 
-    message(type t, const std::vector<Stats> &stats);
+    Message(type t, const std::vector<Stats> &stats);
 
     template<typename It>
-    message(It &pos, It end)
+    Message(It &pos, It end)
         : t{read_uint8(pos, end)},
-          content{read_uint8_vector(pos, end)} {}
+          content{pos, end} {}
 
     [[nodiscard]]
     type get_type() const { return t; }

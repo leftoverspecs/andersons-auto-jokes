@@ -15,9 +15,9 @@
 
 namespace common {
 
-message receive(TCPsocket source);
+Message receive(TCPsocket source);
 
-void send(TCPsocket destination, const message &m);
+void send(TCPsocket destination, const Message &m);
 
 }
 

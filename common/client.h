@@ -14,16 +14,16 @@
 
 namespace common {
 
-class client {
+class Client {
 public:
     class exception : public std::runtime_error {
     public:
         explicit exception(const std::string &message);
     };
-    client(const std::string &hostname, uint16_t port);
-    ~client();
+    Client(const std::string &hostname, uint16_t port);
+    ~Client();
 
-    message send(const message &m) const;
+    Message send(const Message &m) const;
 private:
     TCPsocket socket;
 };

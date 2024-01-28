@@ -21,15 +21,6 @@ namespace game {
 
 class Fight : public Scene {
 public:
-    Fight(SDL_Window *window,
-          int screen_width, int screen_height,
-          engine::Font &font,
-          engine::SpriteMap &family);
-
-    void startup(const std::vector<const common::Stats *> &team1_stats,
-                 const std::vector<const common::Stats *> &team2_stats);
-
-private:
     enum class Winner {
         UNDECIDED,
         TEAM1,
@@ -37,6 +28,18 @@ private:
         NOBODY,
     };
 
+    Fight(SDL_Window *window,
+          int screen_width, int screen_height,
+          engine::Font &font,
+          engine::SpriteMap &family);
+
+    void startup(const std::vector<const common::Stats *> &team1_stats,
+                 const std::vector<common::Stats> &team2_stats);
+
+    [[nodiscard]]
+    Winner get_result() const;
+
+private:
     enum class State {
         FADE_IN,
         PREPARE,
@@ -50,8 +53,6 @@ private:
         FADE_OUT,
     };
 
-    [[nodiscard]]
-    Winner finished() const;
     void update(float delta_time);
     void on_loop(float delta_time) override;
 

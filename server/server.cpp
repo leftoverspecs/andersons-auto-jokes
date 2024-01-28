@@ -7,6 +7,8 @@
 
 #include <initialize.h>
 #include <map>
+#include <optional>
+
 #include <message.h>
 #include <stats.h>
 #include <transmit.h>
@@ -14,7 +16,7 @@
 class handler {
 public:
     virtual ~handler() = default;
-    virtual common::message receive(int id, const common::message &data) = 0;
+    virtual common::Message receive(int id, const common::Message &data) = 0;
     virtual bool idle() = 0;
 };
 
@@ -111,15 +113,15 @@ void server::run(handler &h, unsigned int timeout) {
 int server::check_client_socket(int i, handler &h) {
     TCPsocket &client = clients[i];
     if (SDLNet_SocketReady(client)) {
-        const common::message received = common::receive(client);
-        const common::message answer = h.receive(i, received);
+        const common::Message received = common::receive(client);
+        const common::Message answer = h.receive(i, received);
         if (running) {
             common::send(client, answer);
             switch (received.get_type()) {
-            case common::message::type::CLIENT_QUIT:
+            case common::Message::type::CLIENT_QUIT:
                 remove_client(i);
                 break;
-            case common::message::type::SERVER_QUIT:
+            case common::Message::type::SERVER_QUIT:
                 remove_client(i);
                 running = false;
                 break;
@@ -127,7 +129,7 @@ int server::check_client_socket(int i, handler &h) {
                 break;
             }
         } else {
-            send(client, common::message(common::message::type::CLIENT_QUIT));
+            send(client, common::Message(common::Message::type::CLIENT_QUIT));
             remove_client(i);
         }
         return 1;
@@ -148,7 +150,7 @@ int server::check_server_socket() {
                     SDL_Log("Can't accept more clients since server shuts down");
                 }
             } else {
-                SDL_Log("Error accepting client: %s", SDLNet_GetError());
+                SDL_Log("Error accepting Client: %s", SDLNet_GetError());
             }
         } else {
             SDL_Log("Can't accept more clients, already accepted %ld", clients.size());
@@ -163,15 +165,15 @@ void server::add_client(TCPsocket client) {
     const auto it = std::find(clients.begin(), clients.end(), nullptr);
     if (it != clients.end()) {
         if (SDLNet_TCP_AddSocket(socket_set, client) > 0) {
-            SDL_Log("Accepting client %d", num_clients);
+            SDL_Log("Accepting Client %d", num_clients);
             *it = client;
             ++num_clients;
         } else {
-            SDL_Log("Error adding client socket to socket set: %s", SDLNet_GetError());
+            SDL_Log("Error adding Client socket to socket set: %s", SDLNet_GetError());
             SDLNet_TCP_Close(client);
         }
     } else {
-        SDL_Log("Can't find any free client slots");
+        SDL_Log("Can't find any free Client slots");
         SDLNet_TCP_Close(client);
     }
 }
@@ -189,56 +191,75 @@ void server::remove_client(int i) {
 
 class test_handler : public handler {
 public:
-    common::message receive(int id, const common::message &received) override {
+    common::Message receive(int id, const common::Message &received) override {
         const std::vector<uint8_t> &content = received.get_content();
         switch (received.get_type()) {
-        case common::message::type::OK: {
+        case common::Message::type::OK: {
             const std::string message{content.data(), content.data() + content.size()};
             std::cout << "Client " << id << ": OK, \"" << message << "\"\n";
-            return common::message{common::message::type::OK};
+            return common::Message{common::Message::type::OK};
         }
-        case common::message::type::ERROR: {
+        case common::Message::type::ERROR: {
             const std::string message{content.data(), content.data() + content.size()};
             std::cout << "Client " << id << ": ERROR, \"" << message << "\"\n";
-            return common::message{common::message::type::OK};
+            return common::Message{common::Message::type::OK};
         }
-        case common::message::type::CLIENT_HELLO: {
+        case common::Message::type::CLIENT_HELLO: {
             const std::string message{content.data(), content.data() + content.size()};
             std::cout << "Client " << id << ": CLIENT_HELLO, \"" << message << "\"\n";
             if (on_client_hello(id, message)) {
-                return common::message{common::message::type::OK};
+                return common::Message{common::Message::type::OK};
             } else {
-                return common::message{common::message::type::ERROR, "Can't accept new client"};
+                return common::Message{common::Message::type::ERROR, "Can't accept new Client"};
             }
         }
-        case common::message::type::CLIENT_QUIT: {
+        case common::Message::type::CLIENT_QUIT: {
             const std::string message{content.data(), content.data() + content.size()};
             std::cout << "Client " << id << ": CLIENT_QUIT, \"" << message << "\"\n";
             on_client_quit(id);
-            return common::message{common::message::type::CLIENT_QUIT};
+            return common::Message{common::Message::type::CLIENT_QUIT};
         }
-        case common::message::type::SERVER_QUIT: {
+        case common::Message::type::SERVER_QUIT: {
             const std::string message{content.data(), content.data() + content.size()};
             std::cout << "Client " << id << ": SERVER_QUIT, \"" << message << "\"\n";
-            return common::message{common::message::type::CLIENT_QUIT};
+            return common::Message{common::Message::type::CLIENT_QUIT};
         }
-        case common::message::type::BATTLE: {
+        case common::Message::type::GET_OPPONENT: {
             auto pos = content.begin();
             std::vector<common::Stats> stats = common::read_stats(pos, content.end());
             std::cout << "Client " << id << ": BATTLE\n";
-            queue.emplace(id, stats);
-            auto it = queue.begin();
-            while (it != queue.end()) {
-                const auto opponent_stats = it->second;
-                if (opponent_stats.size() == stats.size()) {
-                    queue.erase(it);
-                    return common::message{common::message::type::OPPONENT, opponent_stats};
+            auto it = served.begin();
+            while (it != served.end()) {
+                const int opponent_id = it->first;
+                if (opponent_id != id) {
+                    const auto opponent_stats = it->second;
+                    if (opponent_stats.size() == stats.size()) {
+                        served.erase(it);
+                        return common::Message{common::Message::type::OPPONENT, opponent_stats};
+                    }
                 }
+                ++it;
             }
-            return common::message{common::message::type::RETRY};
+            it = waiting.begin();
+            while (it != waiting.end()) {
+                const int opponent_id = it->first;
+                if (opponent_id != id) {
+                    const auto opponent_stats = it->second;
+                    if (opponent_stats.size() == stats.size()) {
+                        waiting.erase(it);
+                        served.emplace(id, stats);
+                        return common::Message{common::Message::type::OPPONENT, opponent_stats};
+                    }
+                }
+                ++it;
+            }
+            if (waiting.find(id) == waiting.end()) {
+                waiting.emplace(id, stats);
+            }
+            return common::Message{common::Message::type::RETRY};
         }
         default:
-            return common::message{common::message::type::ERROR, "Unexpected message type"};
+            return common::Message{common::Message::type::ERROR, "Unexpected message type"};
         }
     }
 
@@ -248,7 +269,8 @@ public:
 
 private:
     std::map<int, std::string> players;
-    std::map<int, std::vector<common::Stats>> queue;
+    std::map<int, std::vector<common::Stats>> waiting;
+    std::map<int, std::vector<common::Stats>> served;
 
 
     bool on_client_hello(int id, const std::string &name) {
@@ -266,6 +288,8 @@ private:
             SDL_Log("Player with id %d does not exist", id);
         } else {
             players.erase(id);
+            waiting.erase(id);
+            served.erase(id);
             SDL_Log("Player with id %d quits the party", id);
         }
     }
@@ -273,8 +297,8 @@ private:
 
 
 int main() {
-    common::initialize sdl_init(SDL_Init(0), &SDL_Quit, &SDL_GetError);
-    common::initialize sdlnet_init(SDLNet_Init(), &SDLNet_Quit, &SDLNet_GetError);
+    common::Initialize sdl_init(SDL_Init(0), &SDL_Quit, &SDL_GetError);
+    common::Initialize sdlnet_init(SDLNet_Init(), &SDLNet_Quit, &SDLNet_GetError);
     server s(10000, 10);
     test_handler h;
     s.run(h, 1000);

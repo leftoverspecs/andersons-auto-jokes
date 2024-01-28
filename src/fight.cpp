@@ -21,7 +21,7 @@ Fight::Fight(SDL_Window *window,
       background(screen_width, screen_height, arena, sizeof(arena)) {}
 
 void Fight::startup(const std::vector<const common::Stats *> &team1_stats,
-                    const std::vector<const common::Stats *> &team2_stats) {
+                    const std::vector<common::Stats> &team2_stats) {
     team1.clear();
     team1.reserve(team1_stats.size());
     float x = 20.0f;
@@ -36,9 +36,9 @@ void Fight::startup(const std::vector<const common::Stats *> &team1_stats,
     x = 700.0f;
     team2.clear();
     team2.reserve(team2_stats.size());
-    for (const auto s: team2_stats) {
-        if (!s->is_empty()) {
-            Person person{screen_height, family_renderer, font, box_renderer, textboxes, s};
+    for (const auto &s: team2_stats) {
+        if (!s.is_empty()) {
+            Person person{screen_height, family_renderer, font, box_renderer, textboxes, &s};
             person.stand(x, 150.0f, false);
             x -= 70.0f;
             team2.push_back(person);
@@ -87,14 +87,14 @@ void Fight::update(float delta_time) {
                 state = State::FIRST_TALKING;
                 person1.talk();
                 person2.hear();
-                timer = 4000.0f;
+                timer = 100.0f;//4000.0f;
             }
         } else if (state == State::FIRST_TALKING) {
             if (timer < 1.0f) {
                 state = State::SECOND_TALKING;
                 person1.hear();
                 person2.talk();
-                timer = 4000.0f;
+                timer = 100.0f;//4000.0f;
             }
         } else if (state == State::SECOND_TALKING) {
             if (timer < 1.0f) {
@@ -136,7 +136,7 @@ void Fight::update(float delta_time) {
     }
 }
 
-Fight::Winner Fight::finished() const {
+Fight::Winner Fight::get_result() const {
     if (state != State::FADE_OUT) {
         return Winner::UNDECIDED;
     } else {

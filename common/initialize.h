@@ -5,10 +5,10 @@
 
 namespace common {
 
-class initialize {
+class Initialize {
 public:
-    initialize(int result, void (*quit)(), const char *(*get_error)());
-    ~initialize();
+    Initialize(int result, void (*quit)(), const char *(*get_error)());
+    ~Initialize();
 private:
     void (*quit)();
 };

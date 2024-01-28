@@ -2,10 +2,10 @@
 
 namespace common {
 
-message receive(TCPsocket source) {
+Message receive(TCPsocket source) {
     std::vector<uint8_t> buffer(256);
     const int received = SDLNet_TCP_Recv(source, buffer.data(), static_cast<int>(buffer.size()));
-    if (received < 0) {
+    if (received <= 0) {
         throw std::runtime_error(std::string("Can't receive data: ") + SDLNet_GetError());
     } else {
         buffer.resize(received);
@@ -14,7 +14,7 @@ message receive(TCPsocket source) {
     }
 }
 
-void send(TCPsocket destination, const message &m) {
+void send(TCPsocket destination, const Message &m) {
     std::vector<uint8_t> buffer{m.serialize()};
     int sent = SDLNet_TCP_Send(destination, buffer.data(), static_cast<int>(buffer.size()));
     if (sent < buffer.size()) {
