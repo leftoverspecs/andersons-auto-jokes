@@ -29,6 +29,8 @@
 #include <family.png.h>
 #include <frame.png.h>
 #include <lobby.mp3.h>
+#include <LobbyMusic.mp3.h>
+#include <FightMusic.mp3.h>
 
 #ifdef _WIN32
 extern "C" {
@@ -42,7 +44,7 @@ const int WIDTH = 800;
 const int HEIGHT = 600;
 
 
-int main() {
+int main(int argc, char *argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO) != 0) {
         std::cerr << SDL_GetError() << std::endl;
         return EXIT_FAILURE;
@@ -80,6 +82,8 @@ int main() {
 
     engine::Audio audio(44100, MIX_DEFAULT_FORMAT, 2, 64);
     game::AudioData audio_data;
+    engine::Music anton_lobby_music{LobbyMusic, sizeof(LobbyMusic)};
+    engine::Music anton_fight_music{FightMusic, sizeof(FightMusic)};
     engine::Music lobby_music{lobby, sizeof(lobby)};
 
     common::Client client("localhost", 10000);
@@ -108,18 +112,27 @@ int main() {
     game::Result result(HEIGHT, window, frame_renderer, font);
     int losses = 0;
     while (true) {
+        if (argc == 1) {
+            anton_lobby_music.fade_in(-1, 1000);
+        }
         shop.startup(team1, deck);
         if (!shop.run()) {
             break;
         }
+        if (argc == 1) {
+            anton_lobby_music.fade_out(1000);
+        }
         team1 = shop.get_team();
         game::Lobby lobby(HEIGHT, window, frame_renderer, font, client);
-        lobby_music.fade_in(-1, 1000);
+        //lobby_music.fade_in(-1, 1000);
+        if (argc == 1) {
+            anton_fight_music.fade_in(-1, 1000);
+        }
         lobby.startup(team1);
         if (!lobby.run()) {
             break;
         }
-        lobby_music.fade_out(1000);
+        //lobby_music.fade_out(1000);
         fight.startup(team1, lobby.get_opponent_stats());
         if (!fight.run()) {
             break;
@@ -131,6 +144,9 @@ int main() {
         result.startup(winner, losses);
         if (!result.run()) {
             break;
+        }
+        if (argc == 1) {
+            anton_fight_music.fade_out(1000);
         }
         if (team1.size() < 4) {
             team1.push_back(&game::EMPTY);

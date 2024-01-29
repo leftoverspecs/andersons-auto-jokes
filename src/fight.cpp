@@ -149,7 +149,7 @@ void Fight::update(float delta_time) {
             }
         }
     } else if (state == State::FADE_OUT) {
-        alpha -= delta_time * 0.0003f;
+        alpha -= delta_time * 0.0002f;
         if (alpha < 0.001f) {
             alpha = 0.0f;
             exit();

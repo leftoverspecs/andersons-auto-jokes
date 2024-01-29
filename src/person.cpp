@@ -79,7 +79,7 @@ void Person::stand(float x, float y, bool looks_right_) {
 }
 
 void Person::walk_to(float x, float y) {
-    audio_data->play_steps();
+    //audio_data->play_steps();
     state = State::WALKING;
     destination_x = x;
     destination_y = y;
