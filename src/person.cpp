@@ -13,6 +13,8 @@
 
 #include <SDL_mouse.h>
 
+#include <algorithm>
+
 namespace {
 
 const float SPEED = 0.10f;

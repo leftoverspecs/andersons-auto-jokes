@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <exception>
 #include <iterator>
-#include <span>
 #include <vector>
 
 namespace common {
@@ -88,7 +87,7 @@ void write_float(It &pos, float value) {
 }
 
 template<typename It>
-void write_uint8_vector(It &pos, std::span<const uint8_t> values) {
+void write_uint8_vector(It &pos, const std::vector<uint8_t> &values) {
     write_uint32(pos, values.size());
     for (const uint8_t value : values) {
         write_uint8(pos, value);

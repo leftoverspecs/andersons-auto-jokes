@@ -296,7 +296,7 @@ private:
 };
 
 
-int main() {
+int main(int argc, char *argv[]) {
     common::Initialize sdl_init(SDL_Init(0), &SDL_Quit, &SDL_GetError);
     common::Initialize sdlnet_init(SDLNet_Init(), &SDLNet_Quit, &SDLNet_GetError);
     server s(10000, 10);

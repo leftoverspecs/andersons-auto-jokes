@@ -49,6 +49,10 @@ int main(int argc, char *argv[]) {
         std::cerr << SDL_GetError() << std::endl;
         return EXIT_FAILURE;
     }
+    if (SDLNet_Init() != 0) {
+        std::cerr << SDLNet_GetError() << '\n';
+        return EXIT_FAILURE;
+    }
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
@@ -86,8 +90,8 @@ int main(int argc, char *argv[]) {
     engine::Music anton_fight_music{FightMusic, sizeof(FightMusic)};
     engine::Music lobby_music{lobby, sizeof(lobby)};
 
-    common::Client client("localhost", 10000);
-    const common::Message hello_answer = client.send(common::Message{common::Message::type::CLIENT_HELLO, "andersons"});
+    common::Client client("127.0.0.1", 10000);
+    const common::Message hello_answer = client.send(common::Message{ common::Message::type::CLIENT_HELLO, "andersons" });
     if (hello_answer.get_type() != common::Message::type::OK) {
         return EXIT_FAILURE;
     }
@@ -95,7 +99,7 @@ int main(int argc, char *argv[]) {
     engine::Font font(WIDTH, HEIGHT, boxyfont, sizeof(boxyfont), assets::boxyfont_widths);
     game::Speech speech(WIDTH, HEIGHT);
     engine::SpriteMap family_spritemap{family, sizeof(family), 8, 9};
-    game::Background frame_renderer{WIDTH, HEIGHT, frame, sizeof(frame)};
+    game::Background frame_renderer{static_cast<float>(WIDTH), static_cast<float>(HEIGHT), frame, sizeof(frame)};
 
     std::set<const common::Stats *> remaining{game::ALL.begin(), game::ALL.end()};
     std::vector<const common::Stats *> deck;
@@ -152,7 +156,7 @@ int main(int argc, char *argv[]) {
             team1.push_back(&game::EMPTY);
             if (deck.size() < 4) {
                 std::sample(remaining.begin(), remaining.end(), std::inserter(deck, deck.end()), 1, rng);
-                for (const auto p: deck) {
+                for (const auto p : deck) {
                     remaining.erase(p);
                 }
             }

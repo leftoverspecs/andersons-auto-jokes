@@ -38,7 +38,7 @@ convert_to_header(snd_mumble_male2.wav snd_mumble_male2)
 convert_to_header(snd_mumble_male3.wav snd_mumble_male3)
 convert_to_header(snd_mumble_male4.wav snd_mumble_male4)
 convert_to_header(snd_mumble_male5.wav snd_mumble_male5)
-convert_to_header(snd_steps2.wav snd_steps2)
+#convert_to_header(snd_steps2.wav snd_steps2)
 convert_to_header(snd_drag.wav snd_drag)
 convert_to_header(snd_drop.wav snd_drop)
 
@@ -167,10 +167,10 @@ add_library(game_assets INTERFACE
         "${CMAKE_CURRENT_BINARY_DIR}/snd_mumble_male4.wav.h"
         "${CMAKE_CURRENT_BINARY_DIR}/snd_mumble_male5.wav"
         "${CMAKE_CURRENT_BINARY_DIR}/snd_mumble_male5.wav.h"
-        "${CMAKE_CURRENT_BINARY_DIR}/snd_steps.wav"
-        "${CMAKE_CURRENT_BINARY_DIR}/snd_steps.wav.h"
-        "${CMAKE_CURRENT_BINARY_DIR}/snd_steps2.wav"
-        "${CMAKE_CURRENT_BINARY_DIR}/snd_steps2.wav.h"
+        #"${CMAKE_CURRENT_BINARY_DIR}/snd_steps.wav"
+        #"${CMAKE_CURRENT_BINARY_DIR}/snd_steps.wav.h"
+        #"${CMAKE_CURRENT_BINARY_DIR}/snd_steps2.wav"
+        #"${CMAKE_CURRENT_BINARY_DIR}/snd_steps2.wav.h"
         "${CMAKE_CURRENT_BINARY_DIR}/snd_drag.wav"
         "${CMAKE_CURRENT_BINARY_DIR}/snd_drag.wav.h"
         "${CMAKE_CURRENT_BINARY_DIR}/snd_drop.wav"

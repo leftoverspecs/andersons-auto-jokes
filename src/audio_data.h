@@ -18,9 +18,9 @@ public:
 private:
     std::vector<engine::Chunk> snd_laugh;
     std::vector<engine::Chunk> snd_mumble;
-    engine::Chunk snd_steps;
-    engine::Chunk drag_chunk;
-    engine::Chunk drop_chunk;
+    //engine::Chunk snd_steps;
+    //engine::Chunk drag_chunk;
+    //engine::Chunk drop_chunk;
 };
 
 }
