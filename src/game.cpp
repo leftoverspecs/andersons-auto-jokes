@@ -90,7 +90,16 @@ int main(int argc, char *argv[]) {
     engine::Music anton_fight_music{FightMusic, sizeof(FightMusic)};
     engine::Music lobby_music{lobby, sizeof(lobby)};
 
-    common::Client client("127.0.0.1", 10000);
+    bool music = true;
+    std::string hostname = "127.0.0.1";
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "--no-music") == 0) {
+            music = false;
+        } else {
+            hostname = argv[i];
+        }
+    }
+    common::Client client(hostname.c_str(), 10000);
     const common::Message hello_answer = client.send(common::Message{ common::Message::type::CLIENT_HELLO, "andersons" });
     if (hello_answer.get_type() != common::Message::type::OK) {
         return EXIT_FAILURE;
@@ -116,27 +125,25 @@ int main(int argc, char *argv[]) {
     game::Result result(HEIGHT, window, frame_renderer, font);
     int losses = 0;
     while (true) {
-        if (argc == 1) {
+        if (music) {
             anton_lobby_music.fade_in(-1, 1000);
         }
         shop.startup(team1, deck);
         if (!shop.run()) {
             break;
         }
-        if (argc == 1) {
+        if (music) {
             anton_lobby_music.fade_out(1000);
         }
         team1 = shop.get_team();
         game::Lobby lobby(HEIGHT, window, frame_renderer, font, client);
-        //lobby_music.fade_in(-1, 1000);
-        if (argc == 1) {
+        if (music) {
             anton_fight_music.fade_in(-1, 1000);
         }
         lobby.startup(team1);
         if (!lobby.run()) {
             break;
         }
-        //lobby_music.fade_out(1000);
         fight.startup(team1, lobby.get_opponent_stats());
         if (!fight.run()) {
             break;
@@ -149,7 +156,7 @@ int main(int argc, char *argv[]) {
         if (!result.run()) {
             break;
         }
-        if (argc == 1) {
+        if (music) {
             anton_fight_music.fade_out(1000);
         }
         if (team1.size() < 4) {
