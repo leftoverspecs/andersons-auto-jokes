@@ -2,7 +2,7 @@
 #define ANDERSONS_AUTO_JOKES_PRIMITIVES_H
 
 #include <cstdint>
-#include <exception>
+#include <stdexcept>
 #include <iterator>
 #include <vector>
 

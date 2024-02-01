@@ -2,6 +2,7 @@
 
 #include <font.h>
 #include "speech.h"
+#include "audio_data.h"
 
 #include <iostream>
 #include <shop.png.h>
@@ -134,16 +135,15 @@ void Shop::on_key_pressed(SDL_Keycode code) {
 }
 
 void Shop::on_mouse_button_down(int x, int y) {
-    std::cout << "button down\n";
     if (state == State::SHOPPING) {
         for (auto &p: available) {
             if (p.inside(x, y)) {
-                std::cout << "dragging\n";
                 dragging = &p;
                 dragging_initial_x = p.get_current_x();
                 dragging_initial_y = p.get_current_y();
                 dragging_source = &p;
                 state = State::DRAGGING;
+                audio_data.play_drag();
                 break;
             }
         }
@@ -151,12 +151,11 @@ void Shop::on_mouse_button_down(int x, int y) {
 }
 
 void Shop::on_mouse_button_up(int x, int y) {
-    std::cout << "button up\n";
     if (state == State::DRAGGING && dragging != nullptr) {
         for (auto &p : team) {
             if (p.inside(x, y)) {
-                std::cout << "dropping onto\n";
                 common::Stats empty;
+                audio_data.play_drop();
                 p.drop(dragging->get_stats_prototype());
                 dragging_source->drop(&empty);
                 break;
