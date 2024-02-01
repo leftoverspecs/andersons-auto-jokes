@@ -141,7 +141,6 @@ void Fight::update(float delta_time) {
                     }
                 }
             }
-            std::cout << "current_person1 = " << current_person1 << ", current_person2 = " << current_person2 << '\n';
             if (current_person1 != -1 && current_person2 != -1) {
                 state = State::PREPARE;
             } else {

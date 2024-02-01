@@ -20,6 +20,8 @@ add_executable(andersonsautojokes WIN32
         speech.h
         family.cpp
         family.h
+        music.cpp
+        music.h
 )
 target_link_libraries(andersonsautojokes PRIVATE game_assets boxyfont engine common SDL2::SDL2main)
 add_dependencies(andersonsautojokes server)

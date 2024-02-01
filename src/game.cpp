@@ -23,14 +23,12 @@
 #include "lobby.h"
 #include "result.h"
 #include "speech.h"
+#include "music.h"
 
 #include <boxyfont.h>
 #include <boxyfont.png.h>
 #include <family.png.h>
 #include <frame.png.h>
-#include <lobby.mp3.h>
-#include <LobbyMusic.mp3.h>
-#include <FightMusic.mp3.h>
 
 #ifdef _WIN32
 extern "C" {
@@ -85,20 +83,19 @@ int main(int argc, char *argv[]) {
     glViewport(0, 0, WIDTH, HEIGHT);
 
     engine::Audio audio(44100, MIX_DEFAULT_FORMAT, 2, 64);
-    game::AudioData audio_data;
-    engine::Music anton_lobby_music{LobbyMusic, sizeof(LobbyMusic)};
-    engine::Music anton_fight_music{FightMusic, sizeof(FightMusic)};
-    engine::Music lobby_music{lobby, sizeof(lobby)};
 
-    bool music = true;
+    bool music_enabled = true;
     std::string hostname = "127.0.0.1";
     for (int i = 1; i < argc; ++i) {
         if (strcmp(argv[i], "--no-music") == 0) {
-            music = false;
+            music_enabled = false;
         } else {
             hostname = argv[i];
         }
     }
+    game::AudioData audio_data(music_enabled);
+    game::Music music(MIX_MAX_VOLUME / 3);
+
     common::Client client(hostname.c_str(), 10000);
     const common::Message hello_answer = client.send(common::Message{ common::Message::type::CLIENT_HELLO, "andersons" });
     if (hello_answer.get_type() != common::Message::type::OK) {
@@ -125,20 +122,17 @@ int main(int argc, char *argv[]) {
     game::Result result(HEIGHT, window, frame_renderer, font);
     int losses = 0;
     while (true) {
-        if (music) {
-            anton_lobby_music.fade_in(-1, 1000);
+        if (music_enabled) {
+            music.play_lobby_music();
         }
         shop.startup(team1, deck);
         if (!shop.run()) {
             break;
         }
-        if (music) {
-            anton_lobby_music.fade_out(1000);
-        }
         team1 = shop.get_team();
         game::Lobby lobby(HEIGHT, window, frame_renderer, font, client);
-        if (music) {
-            anton_fight_music.fade_in(-1, 1000);
+        if (music_enabled) {
+            music.play_fight_music();
         }
         lobby.startup(team1);
         if (!lobby.run()) {
@@ -156,9 +150,6 @@ int main(int argc, char *argv[]) {
         if (!result.run()) {
             break;
         }
-        if (music) {
-            anton_fight_music.fade_out(1000);
-        }
         if (team1.size() < 4) {
             team1.push_back(&game::EMPTY);
             if (deck.size() < 4) {
@@ -171,6 +162,7 @@ int main(int argc, char *argv[]) {
             break;
         }
     }
+    music.stop();
 
     client.send(common::Message{common::Message::type::CLIENT_QUIT});
     SDL_GL_DeleteContext(context);

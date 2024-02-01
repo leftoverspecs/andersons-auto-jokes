@@ -8,13 +8,14 @@ Stats::Stats() : sprite_row{0} {}
 
 Stats::Stats(std::string description, int sprite_row,
              float capacity, float funny, float giddy,
-             int laugh_index)
+             int laugh_index, int mumble_index)
     : description{std::move(description)},
       sprite_row{sprite_row},
       capacity{capacity},
       funny{funny},
       giddy{giddy},
-      laugh_index{laugh_index}
+      laugh_index{laugh_index},
+      mumble_index{mumble_index}
 {}
 
 bool Stats::is_empty() const {
@@ -55,6 +56,9 @@ bool Stats::operator!=(const Stats &other) const {
 
 void Stats::set_giddy(float new_giddy) {
     giddy = new_giddy;
+}
+int Stats::get_mumble_index() const {
+    return mumble_index;
 }
 
 } // namespace common

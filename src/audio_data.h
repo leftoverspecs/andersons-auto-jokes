@@ -8,7 +8,7 @@ namespace game {
 
 class AudioData {
 public:
-    AudioData();
+    explicit AudioData(bool enabled);
 
     void play_laugh(int index) const;
     void play_mumble(int index) const;
@@ -17,6 +17,7 @@ public:
     void play_drop() const;
 
 private:
+    bool enabled;
     std::vector<engine::Chunk> snd_laugh;
     std::vector<engine::Chunk> snd_mumble;
     engine::Chunk snd_steps;

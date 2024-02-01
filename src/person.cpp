@@ -14,6 +14,7 @@
 #include <SDL_mouse.h>
 
 #include <algorithm>
+#include <iostream>
 
 namespace {
 
@@ -160,14 +161,15 @@ bool Person::arrived() const {
 }
 
 void Person::fly_away() {
-    if (audio_data != nullptr) {
-        //audio_data->play_laugh(current_stats.get_laugh_index());
+    if (audio_data != nullptr && state != State::LAUGHING) {
+        audio_data->play_laugh(current_stats.get_laugh_index());
     }
     state = State::LAUGHING;
     destination_y = 1000.0f;
 }
 
 void Person::talk() {
+    audio_data->play_mumble(current_stats.get_mumble_index());
     state = State::TALKING;
 }
 

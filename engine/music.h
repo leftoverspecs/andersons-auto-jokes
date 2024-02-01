@@ -16,6 +16,8 @@ public:
 
     void fade_in(int loops, int ms) const;
     void fade_out(int ms) const;
+
+    static void set_volume(int volume);
 private:
     Mix_Music *music;
 };

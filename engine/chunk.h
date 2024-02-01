@@ -18,6 +18,7 @@ public:
     Chunk &operator = (Chunk &&) noexcept;
 
     void play(int loops) const;
+    void set_volume(int volume) const;
 private:
     Mix_Chunk *chunk;
 };

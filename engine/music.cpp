@@ -26,4 +26,8 @@ void Music::fade_out(int ms) const {
     Mix_FadeOutMusic(ms);
 }
 
+void Music::set_volume(int volume) {
+    Mix_VolumeMusic(volume);
+}
+
 }

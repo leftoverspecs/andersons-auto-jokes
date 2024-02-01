@@ -14,7 +14,7 @@ public:
     Stats();
     Stats(std::string description, int sprite_row,
           float capacity, float funny, float giddy,
-          int laugh_index);
+          int laugh_index, int mumble_index);
 
     template<typename It>
     Stats(It &pos, It end);
@@ -45,6 +45,8 @@ public:
     [[nodiscard]]
     int get_laugh_index() const;
 
+    int get_mumble_index() const;
+
     bool operator == (const Stats &other) const;
     bool operator != (const Stats &other) const;
 private:
@@ -54,6 +56,7 @@ private:
     float funny{};
     float giddy{};
     int laugh_index{};
+    int mumble_index{};
 };
 
 template<typename It>
@@ -63,7 +66,8 @@ Stats::Stats(It &pos, It end)
       capacity{read_float(pos, end)},
       funny{read_float(pos, end)},
       giddy{read_float(pos, end)},
-      laugh_index{read_uint8(pos, end)}
+      laugh_index{read_uint8(pos, end)},
+      mumble_index{read_uint8(pos, end)}
 {}
 
 template<typename It>
@@ -85,6 +89,7 @@ void Stats::write(It &pos) const {
     write_float(pos, funny);
     write_float(pos, giddy);
     write_uint8(pos, laugh_index);
+    write_uint8(pos, mumble_index);
 }
 
 template<typename It>

@@ -34,4 +34,8 @@ void Chunk::play(int loops) const {
     }
 }
 
+void Chunk::set_volume(int volume) const {
+    Mix_VolumeChunk(chunk, volume);
+}
+
 }
