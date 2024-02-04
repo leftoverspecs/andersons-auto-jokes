@@ -1,9 +1,11 @@
 #include <GL/glew.h>
 #include <SDL.h>
 
+#include <thread>
 #include <vector>
 #include <set>
 #include <random>
+#include <memory>
 
 #include <audio.h>
 #include <font.h>
@@ -14,11 +16,12 @@
 #include <cstdlib>
 
 #include "fight.h"
-#include "person.h"
 #include "shop.h"
+#include "intro.h"
 
 #include "family.h"
 #include "audio_data.h"
+#include "server.h"
 #include "client.h"
 #include "lobby.h"
 #include "result.h"
@@ -40,6 +43,27 @@ _declspec(dllexport) uint32_t NvOptimusEnablement = 0x00000001;
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
+
+class ServerThread {
+public:
+    ServerThread() : server(10000, 16) {}
+    ~ServerThread() {
+        server.shutdown();
+        if (thread) {
+            thread->join();
+        }
+    }
+
+    void run() {
+        thread = std::make_unique<std::thread>([this]() {
+            this->server.run(1000);
+        });
+    }
+
+private:
+    std::unique_ptr<std::thread> thread;
+    common::server server;
+};
 
 
 int main(int argc, char *argv[]) {
@@ -85,22 +109,13 @@ int main(int argc, char *argv[]) {
     engine::Audio audio(44100, MIX_DEFAULT_FORMAT, 2, 64);
 
     bool music_enabled = true;
-    std::string hostname = "127.0.0.1";
     for (int i = 1; i < argc; ++i) {
         if (strcmp(argv[i], "--no-music") == 0) {
             music_enabled = false;
-        } else {
-            hostname = argv[i];
         }
     }
     game::AudioData audio_data(music_enabled);
     game::Music music(MIX_MAX_VOLUME / 3);
-
-    common::Client client(hostname.c_str(), 10000);
-    const common::Message hello_answer = client.send(common::Message{ common::Message::type::CLIENT_HELLO, "andersons" });
-    if (hello_answer.get_type() != common::Message::type::OK) {
-        return EXIT_FAILURE;
-    }
 
     engine::Font font(WIDTH, HEIGHT, boxyfont, sizeof(boxyfont), assets::boxyfont_widths);
     game::Speech speech(WIDTH, HEIGHT);
@@ -117,20 +132,37 @@ int main(int argc, char *argv[]) {
     }
     std::vector<const common::Stats *> team1{&game::EMPTY};
 
+    game::Intro intro(window, WIDTH, HEIGHT, font, speech, audio_data, family_spritemap);
     game::Shop shop(window, WIDTH, HEIGHT, font, speech, audio_data, family_spritemap);
     game::Fight fight(window, WIDTH, HEIGHT, font, speech, audio_data, family_spritemap);
     game::Result result(HEIGHT, window, frame_renderer, font);
     int losses = 0;
+    std::unique_ptr<common::Client> client;
+    std::unique_ptr<ServerThread> server;
+    if (music_enabled) {
+        music.play_lobby_music();
+    }
+    if (!intro.run()) {
+        return EXIT_SUCCESS;
+    }
+    if (intro.start_own_server()) {
+        server = std::make_unique<ServerThread>();
+        server->run();
+        client = std::make_unique<common::Client>("localhost", 10000);
+    } else {
+        client = std::make_unique<common::Client>(intro.get_hostname(), 10000);
+    }
+    const common::Message hello_answer = client->send(common::Message{ common::Message::type::CLIENT_HELLO, "andersons" });
+    if (hello_answer.get_type() != common::Message::type::OK) {
+        return EXIT_FAILURE;
+    }
     while (true) {
-        if (music_enabled) {
-            music.play_lobby_music();
-        }
         shop.startup(team1, deck);
         if (!shop.run()) {
             break;
         }
         team1 = shop.get_team();
-        game::Lobby lobby(HEIGHT, window, frame_renderer, font, client);
+        game::Lobby lobby(HEIGHT, window, frame_renderer, font, *client);
         if (music_enabled) {
             music.play_fight_music();
         }
@@ -163,8 +195,11 @@ int main(int argc, char *argv[]) {
         }
     }
     music.stop();
-
-    client.send(common::Message{common::Message::type::CLIENT_QUIT});
+    if (client) {
+        client->send(common::Message{common::Message::type::CLIENT_QUIT});
+        client.reset();
+    }
+    server.reset();
     SDL_GL_DeleteContext(context);
     SDL_DestroyWindow(window);
     SDL_Quit();
